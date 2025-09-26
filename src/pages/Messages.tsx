@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import FooterNav from "../components/FooterNav";
 
 const mockGroups = [
   { 
@@ -59,6 +60,7 @@ const MessagesList = () => {
           </div>
         ))}
       </main>
+      <FooterNav/>
     </div>
   );
 };

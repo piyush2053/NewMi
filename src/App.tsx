@@ -45,7 +45,6 @@ const App = () => {
                       <ProtectedRoute>
                         <Navbar />
                         <MessagesList />
-                        <FooterNav />
                       </ProtectedRoute>
                     }
                   />

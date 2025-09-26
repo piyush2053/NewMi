@@ -68,10 +68,10 @@ const Profile = () => {
   }, []);
 
   return (
-    <>
-      
+    <div className="min-h-screen">
+      <p className="text-white p-5">Profile</p>
       <FooterNav />
-    </>)
+    </div>)
 };
 
 export default Profile;
