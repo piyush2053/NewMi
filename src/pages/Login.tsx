@@ -1,7 +1,7 @@
 import { Button, Input } from "antd";
 import { MailOutlined, LockOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import logo from '../assets/gifs/predictplus.gif';
+import logo from '../assets/gifs/nearmi.gif';
 import { useAuth } from "../contexts/AuthContext";
 import Loader from "../components/Loader";
 import { useState } from "react";
@@ -55,7 +55,7 @@ const Login = () => {
           <Loader />
         </div>
       )}
-
+<img src={logo} alt="logo" className="h-[100px] my-3" />
       <div className="w-full max-w-xs">
         <Input
           size="large"

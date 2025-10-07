@@ -6,7 +6,7 @@ import {
   ArrowRightOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/gifs/predictplus.gif";
+import logo from "../assets/gifs/nearmi.gif";
 import { useState } from "react";
 import Loader from "../components/Loader";
 import { CNAME } from "../utils/constants";
@@ -73,14 +73,14 @@ const Register = () => {
           <Loader />
         </div>
       )}
-      <img src={logo} alt="logo" className="h-10 mb-5" />
+      <img src={logo} alt="logo" className="h-[100px] my-3" />
       <div className="w-full max-w-xs text-left">
         <label className="text-sm ml-2 mb-1 inline-block">Full Name <span className="text-red-500">*</span></label>
         <Input
           size="large"
           prefix={<UserOutlined />}
           placeholder="Full Name"
-          className="mb-4 rounded-full bg-bg2 text-gray-600 border-gray-700"
+          className="mb-4 rounded-full bg-bg3 text-gray-600 border-gray-700"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -90,7 +90,7 @@ const Register = () => {
           size="large"
           prefix={<MailOutlined />}
           placeholder="Email"
-          className="mb-4 rounded-full bg-bg2 text-gray-600 border-gray-700"
+          className="mb-4 rounded-full bg-bg3 text-gray-600 border-gray-700"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -100,7 +100,7 @@ const Register = () => {
           size="large"
           type="number"
           placeholder="Age"
-          className="mb-4 rounded-full bg-bg2 text-gray-600 border-gray-700"
+          className="mb-4 rounded-full bg-bg3 text-gray-600 border-gray-700"
           value={age}
           onChange={(e) => setAge(e.target.value)}
         />
@@ -112,7 +112,7 @@ const Register = () => {
           placeholder="Mobile Number"
           type="tel"
           maxLength={10}
-          className="mb-4 rounded-full bg-bg2 text-gray-600 border-gray-700"
+          className="mb-4 rounded-full bg-bg3 text-gray-600 border-gray-700"
           value={mobile}
           onChange={(e) => setMobile(e.target.value)}
         />
@@ -122,7 +122,7 @@ const Register = () => {
           size="large"
           prefix={<LockOutlined />}
           placeholder="Create a password"
-          className="mb-4 rounded-full bg-bg2 text-gray-600 border-gray-700"
+          className="mb-4 rounded-full bg-bg3 text-gray-600 border-gray-700"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -132,7 +132,7 @@ const Register = () => {
           size="large"
           prefix={<LockOutlined />}
           placeholder="Confirm password"
-          className="mb-6 rounded-full bg-bg2 text-gray-600 border-gray-700"
+          className="mb-4 rounded-full bg-bg3 text-gray-600 border-gray-700"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
@@ -141,7 +141,7 @@ const Register = () => {
           icon={<ArrowRightOutlined />}
           size="large"
           onClick={handleRegister}
-          className="bg-pBlue min-w-full rounded-full border-none text-white"
+          className="bg-bg2 min-w-full rounded-full border-none text-bg1"
           disabled={loading}
         >
           Create Account
