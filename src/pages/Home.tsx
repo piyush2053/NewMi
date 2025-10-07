@@ -39,7 +39,8 @@ const Home = () => {
         <title>NearMi</title>
       </Helmet>
 
-      <main className="p-4 flex-1 space-y-6">
+      <main className="p-4 flex-1 space-y-8">
+        {/* Nearby Events */}
         <section>
           <h2 className="text-lg font-bold mb-4">Nearby Events</h2>
           <div className="flex gap-4 p-3 overflow-x-auto scrollbar-hide">
@@ -62,6 +63,7 @@ const Home = () => {
           </div>
         </section>
 
+        {/* Host an Event */}
         <section>
           <h2 className="text-lg font-bold mb-4">Want to host an event?</h2>
           <div className="flex gap-4">
@@ -71,6 +73,26 @@ const Home = () => {
             >
               <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
               <div className="absolute inset-0 bg-gradient-to-t from-green-400/50 to-green-600/50"></div>
+              <div className="relative z-10">
+                <FiPlus size={24} color="white" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Add Venue Section */}
+        <section>
+          <h2 className="text-lg font-bold mb-4">
+            Have a space for hosting events?{" "}
+            <span className="text-green-400">List it & earn money!</span>
+          </h2>
+          <div className="flex gap-4">
+            <div
+              className="w-28 h-28 rounded-lg flex items-center justify-center cursor-pointer transform transition-transform duration-200 hover:scale-110 relative overflow-hidden"
+              onClick={() => navigate("/add_venue")}
+            >
+              <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-yellow-400/50 to-yellow-600/50"></div>
               <div className="relative z-10">
                 <FiPlus size={24} color="white" />
               </div>

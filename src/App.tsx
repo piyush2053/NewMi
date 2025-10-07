@@ -16,6 +16,7 @@ import MyBookings from "./pages/Bookings";
 import MessagesList from "./pages/Messages";
 import EventChat from "./components/EventsChat";
 import FooterNav from "./components/FooterNav";
+import AddVenue from "./pages/AddVenue";
 
 const App = () => {
   return (
@@ -54,6 +55,15 @@ const App = () => {
                       <ProtectedRoute>
                         <Navbar />
                         <EventChat />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/add_venue"
+                    element={
+                      <ProtectedRoute>
+                        <Navbar />
+                        <AddVenue />
                       </ProtectedRoute>
                     }
                   />

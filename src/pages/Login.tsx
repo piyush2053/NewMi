@@ -91,7 +91,7 @@ const Login = () => {
         >Sign-In</Button>
 
         <p className="text-xs text-gray-500 text-center mt-8">
-          © {CNAME} {new Date().getFullYear()} &nbsp;|&nbsp; Play at your own risk. It’s addictive. Subject to risks.
+          © {CNAME} {new Date().getFullYear()} &nbsp;|&nbsp;.
         </p>
       </div>
     </div>
