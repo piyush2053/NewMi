@@ -3,6 +3,8 @@ import { Helmet } from "react-helmet-async";
 import FooterNav from "../components/FooterNav";
 import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import VenueSection from "../components/VenueSection";
 
 const events = [
   { id: 1, title: "City Marathon", subtitle: "Running Event", img: "https://cdn.britannica.com/87/146287-050-2BB5E3F6/Runners-Verrazano-Narrows-Bridge-New-York-City-Marathon-2005.jpg" },
@@ -15,6 +17,8 @@ const hostedVenues = [
   { id: 101, name: "Carlton Banquet Hall", desc: "Luxury indoor hall", img: "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=400&q=80" },
   { id: 102, name: "Green Turf Ground", desc: "Cricket Box - Turf", img: "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=400&q=80" },
   { id: 103, name: "Blue Lagoon Resort", desc: "Pool + Party venue", img: "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=400&q=80" },
+  { id: 104, name: "The Roof Deck", desc: "Open sky cafe event space", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
+  { id: 104, name: "The Roof Deck", desc: "Open sky cafe event space", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
   { id: 104, name: "The Roof Deck", desc: "Open sky cafe event space", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
 ];
 
@@ -102,47 +106,7 @@ const Home = () => {
           </div>
         </section>
 
-        <section>
-          <h2 className="text-lg font-bold mb-4">
-            Have a space for hosting events? <span className="text-green-400">List it & earn money!</span>
-          </h2>
-
-          <div className="flex gap-4 mb-4">
-            <div
-              className="w-28 h-28 rounded-lg flex items-center justify-center cursor-pointer transform transition-transform duration-200 hover:scale-110 relative overflow-hidden"
-              onClick={() => navigate("/add_venue")}
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-yellow-400/50 to-yellow-600/50"></div>
-              <div className="relative z-10">
-                <FiPlus size={24} color="white" />
-              </div>
-            </div>
-
-            {visibleVenues.map((venue) => (
-              <div
-                key={venue.id}
-                className="w-28 h-28 rounded-lg overflow-hidden relative cursor-pointer transform hover:scale-110 transition-transform duration-200"
-                onClick={() => navigate(`/manage-venue/${venue.id}`)}
-              >
-                <img src={venue.img} alt={venue.name} className="w-full h-full object-cover" />
-                <div className="absolute bottom-0 left-0 w-full bg-black/40 text-xs p-1 text-center">
-                  {venue.name}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {hostedVenues.length > 2 && (
-            <div className="text-right">
-              <button
-                onClick={() => setShowMore((prev) => !prev)}
-                className="text-green-400 text-sm underline"
-              >
-                {showMore ? "Show less ▲" : "Show more ▼"}
-              </button>
-            </div>
-          )}
-        </section>
+        <VenueSection hostedVenues={hostedVenues} navigate={navigate} />
       </main>
 
       <FooterNav />
