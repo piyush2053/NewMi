@@ -18,8 +18,8 @@ const hostedVenues = [
   { id: 102, name: "Green Turf Ground", desc: "Cricket Box - Turf", img: "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=400&q=80" },
   { id: 103, name: "Blue Lagoon Resort", desc: "Pool + Party venue", img: "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=400&q=80" },
   { id: 104, name: "The Roof Deck", desc: "Open sky cafe event space", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
-  { id: 104, name: "The Roof Deck", desc: "Open sky cafe event space", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
-  { id: 104, name: "The Roof Deck", desc: "Open sky cafe event space", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
+  { id: 104, name: "Bhukkad dhabha", desc: "Dinner with Strangers", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
+  { id: 104, name: "Skyline", desc: "Open sky cafe event space", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
 ];
 
 const Home = () => {
