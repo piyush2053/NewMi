@@ -17,6 +17,7 @@ import MessagesList from "./pages/Messages";
 import EventChat from "./components/EventsChat";
 import FooterNav from "./components/FooterNav";
 import AddVenue from "./pages/AddVenue";
+import ManageVenue from "./pages/ManageVenue";
 
 const App = () => {
   return (
@@ -67,6 +68,7 @@ const App = () => {
                       </ProtectedRoute>
                     }
                   />
+                   <Route path="/manage-venue/:venueId" element={<ManageVenue />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/admin " element={<AdminPanel />} />
                 </Routes>
