@@ -1,8 +1,8 @@
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import FooterNav from "../components/FooterNav";
 import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 const events = [
   { id: 1, title: "City Marathon", subtitle: "Running Event", img: "https://cdn.britannica.com/87/146287-050-2BB5E3F6/Runners-Verrazano-Narrows-Bridge-New-York-City-Marathon-2005.jpg" },
@@ -11,7 +11,6 @@ const events = [
   { id: 4, title: "Art Expo", subtitle: "Art Exhibition", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd4HZhuvY5OokI_mdG5tWklGNB8KUVbOos6g&s" },
 ];
 
-// 👇 mock hosted venues (should be fetched from backend later)
 const hostedVenues = [
   { id: 101, name: "Carlton Banquet Hall", desc: "Luxury indoor hall", img: "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=400&q=80" },
   { id: 102, name: "Green Turf Ground", desc: "Cricket Box - Turf", img: "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=400&q=80" },
@@ -22,17 +21,53 @@ const hostedVenues = [
 const Home = () => {
   const navigate = useNavigate();
   const [showMore, setShowMore] = useState(false);
+  const [locationEnabled, setLocationEnabled] = useState(true);
 
-  // show first 2 venues if not expanded
+  // Show first 2 venues if not expanded
   const visibleVenues = showMore ? hostedVenues : hostedVenues.slice(0, 2);
 
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setLocationEnabled(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      () => setLocationEnabled(true),
+      () => setLocationEnabled(false)
+    );
+  }, []);
+
+  const requestLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      () => setLocationEnabled(true),
+      () => setLocationEnabled(false)
+    );
+  };
+
   return (
-    <div className="min-h-screen flex flex-col font-display bg-bg1 text-white">
+    <div className="min-h-screen flex flex-col font-display bg-bg1 text-white relative">
       <Helmet>
         <title>NearMi</title>
       </Helmet>
 
-      <main className="p-4 flex-1 space-y-8">
+      {/* Floating top notification for location */}
+      {!locationEnabled && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-start bg-black/30 backdrop-blur-sm">
+          <div className="mt-4 px-6 py-3 bg-yellow-500 text-black font-bold rounded-full shadow-lg flex items-center gap-3">
+            <span>Please enable location and hit refresh to continue</span>
+            <button
+              onClick={requestLocation}
+              className="bg-black/20 px-3 py-1 rounded text-white font-semibold hover:bg-black/40"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Main content */}
+      <main className={`p-4 flex-1 space-y-8 ${!locationEnabled ? "blur-sm pointer-events-none" : ""}`}>
         <section>
           <h2 className="text-lg font-bold mb-4">Nearby Events</h2>
           <div className="flex gap-4 p-3 overflow-x-auto scrollbar-hide">
@@ -49,9 +84,9 @@ const Home = () => {
                 </div>
               </div>
             ))}
-
           </div>
         </section>
+
         <section>
           <h2 className="text-lg font-bold mb-4">Want to host an event?</h2>
           <div className="flex gap-4">
@@ -67,14 +102,11 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Add Venue Section */}
         <section>
           <h2 className="text-lg font-bold mb-4">
-            Have a space for hosting events?{" "}
-            <span className="text-green-400">List it & earn money!</span>
+            Have a space for hosting events? <span className="text-green-400">List it & earn money!</span>
           </h2>
 
-          {/* Add new venue */}
           <div className="flex gap-4 mb-4">
             <div
               className="w-28 h-28 rounded-lg flex items-center justify-center cursor-pointer transform transition-transform duration-200 hover:scale-110 relative overflow-hidden"
@@ -86,7 +118,6 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Hosted Venues */}
             {visibleVenues.map((venue) => (
               <div
                 key={venue.id}
@@ -101,7 +132,6 @@ const Home = () => {
             ))}
           </div>
 
-          {/* Show more / less toggle */}
           {hostedVenues.length > 2 && (
             <div className="text-right">
               <button
