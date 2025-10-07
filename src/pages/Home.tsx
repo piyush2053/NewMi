@@ -33,13 +33,13 @@ const Home = () => {
       </Helmet>
 
       <main className="p-4 flex-1 space-y-8">
-        {/* Nearby Events */}
         <section>
           <h2 className="text-lg font-bold mb-4">Nearby Events</h2>
           <div className="flex gap-4 p-3 overflow-x-auto scrollbar-hide">
-            {events.map((event) => (
+            {events?.map((event) => (
               <div
                 key={event.id}
+                onClick={() => navigate(`/event/${event.id}`)}
                 className="h-[200px] w-[200px] rounded-lg overflow-hidden flex-shrink-0 cursor-pointer transform transition-transform duration-200 hover:scale-110 relative"
               >
                 <img src={event.img} alt={event.title} className="w-full h-full object-cover" />
@@ -49,10 +49,9 @@ const Home = () => {
                 </div>
               </div>
             ))}
+
           </div>
         </section>
-
-        {/* Host an Event */}
         <section>
           <h2 className="text-lg font-bold mb-4">Want to host an event?</h2>
           <div className="flex gap-4">

@@ -18,6 +18,7 @@ import EventChat from "./components/EventsChat";
 import FooterNav from "./components/FooterNav";
 import AddVenue from "./pages/AddVenue";
 import ManageVenue from "./pages/ManageVenue";
+import EventDetails from "./pages/EventDetails";
 
 const App = () => {
   return (
@@ -38,6 +39,10 @@ const App = () => {
                       </ProtectedRoute>
                     }
                   />
+                  <Route path="/event/:eventId" element={<ProtectedRoute>
+                    <Navbar />
+                    <EventDetails />
+                  </ProtectedRoute>} />
                   <Route path="/profile" element={<ProtectedRoute><Navbar /><Profile /></ProtectedRoute>} />
                   <Route path="/create_event" element={<ProtectedRoute><Navbar /><CreateEvent /></ProtectedRoute>} />
                   <Route path="/bookings" element={<ProtectedRoute><Navbar /><MyBookings /></ProtectedRoute>} />
@@ -68,7 +73,7 @@ const App = () => {
                       </ProtectedRoute>
                     }
                   />
-                   <Route path="/manage-venue/:venueId" element={<ManageVenue />} />
+                  <Route path="/manage-venue/:venueId" element={<ManageVenue />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/admin " element={<AdminPanel />} />
                 </Routes>
