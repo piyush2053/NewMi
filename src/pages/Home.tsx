@@ -90,8 +90,7 @@ const Home = () => {
             ))}
           </div>
         </section>
-
-        <section>
+    {/* <section>
           <h2 className="text-lg font-bold mb-4">Want to host an event?</h2>
           <div className="flex gap-4">
             <div
@@ -104,8 +103,9 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
+    
         <VenueSection hostedVenues={hostedVenues} navigate={navigate} />
       </main>
 

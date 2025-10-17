@@ -20,10 +20,10 @@ const Login = () => {
   const { setUserFromToken } = useUser();
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      showNotification("Error", `Please Provide Correct Email and Password`, "error", 3000);
-      return;
-    }
+    // if (!email || !password) {
+    //   showNotification("Error", `Please Provide Correct Email and Password`, "error", 3000);
+    //   return;
+    // }
 
     setLoading(true);
     try {

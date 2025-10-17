@@ -10,7 +10,7 @@ module.exports = {
         bg1: "#122017",
         bg2: "#38E07B",
         bg3: "#282c34",
-        bg4: "#304a39ff",
+        bg4: "#273e2fff",
         pBlue: "#1475e1",
         points: "#FED348"
       },

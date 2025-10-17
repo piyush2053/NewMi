@@ -14,7 +14,7 @@ const VenueSection = ({ hostedVenues, navigate }) => {
     );
 
     return (
-        <section>
+        <section className="p-3 bg-bg4 rounded-lg">
             <h2 className="text-lg font-bold mb-4">
                 Have a space for hosting events?{" "}
                 <span className="text-green-400">List it & earn money!</span>
