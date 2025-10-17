@@ -45,7 +45,7 @@ const Navbar = () => {
       </div>
       {isAuthenticated && (
         <Button
-          className="bg-bg2 rounded-full border-none text-bg1 flex items-center gap-1"
+          className="bg-bg4 rounded-full border-none text-bg5 flex items-center gap-1"
           onClick={() => {
             logout();
             navigate("/login");
