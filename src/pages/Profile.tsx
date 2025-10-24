@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Camera, MapPin, Calendar, Users, Trophy } from "lucide-react";
+import FooterNav from "../components/FooterNav";
 
 const useUser = () => ({
   user: {
@@ -161,9 +162,8 @@ const Profile = () => {
           </button>
         </div>
       </div>
-
-      {/* Footer Navigation Placeholder */}
       <div className="h-20"></div>
+      <FooterNav/>
     </div>
   );
 };

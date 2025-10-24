@@ -74,6 +74,8 @@ const Home = () => {
       <main className={`p-4 flex-1 space-y-8 ${!locationEnabled ? "blur-sm pointer-events-none" : ""}`}>
         <section>
           <h2 className="text-lg font-bold mb-4">Nearby Events</h2>
+
+          {/* Events Carousel */}
           <div className="flex gap-4 p-3 overflow-x-auto scrollbar-hide">
             {events?.map((event) => (
               <div
@@ -81,7 +83,11 @@ const Home = () => {
                 onClick={() => navigate(`/event/${event.id}`)}
                 className="h-[200px] w-[200px] rounded-lg overflow-hidden flex-shrink-0 cursor-pointer transform transition-transform duration-200 hover:scale-110 relative"
               >
-                <img src={event.img} alt={event.title} className="w-full h-full object-cover" />
+                <img
+                  src={event.img}
+                  alt={event.title}
+                  className="w-full h-full object-cover"
+                />
                 <div className="absolute bottom-0 left-0 w-full bg-black/40 backdrop-blur-sm text-white p-3">
                   <p className="font-bold text-sm">{event.title}</p>
                   <p className="text-xs">{event.subtitle}</p>
@@ -89,8 +95,24 @@ const Home = () => {
               </div>
             ))}
           </div>
+
+          <div className="mt-5 px-3">
+            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Filters</p>
+
+            <div className="flex gap-3 overflow-x-auto scrollbar-hide">
+              {["Sports", "Dance", "Music", "Food"].map((category) => (
+                <div
+                  key={category}
+                  className="px-3 py-1 bg-bg2 dark:bg-bg4 text-bg1 dark:text-bg2 rounded-full text-[10px] font-medium cursor-pointer transition-all hover:bg-gray-300 dark:hover:bg-gray-700"
+                >
+                  {category}
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
-    {/* <section>
+
+        {/* <section>
           <h2 className="text-lg font-bold mb-4">Want to host an event?</h2>
           <div className="flex gap-4">
             <div
@@ -105,7 +127,7 @@ const Home = () => {
           </div>
         </section> */}
 
-    
+
         <VenueSection hostedVenues={hostedVenues} navigate={navigate} />
       </main>
 
