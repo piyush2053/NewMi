@@ -5,6 +5,7 @@ import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import VenueSection from "../components/VenueSection";
+import { useUser } from "../contexts/UserContext";
 
 const events = [
   { id: 1, title: "City Marathon", subtitle: "Running Event", img: "https://cdn.britannica.com/87/146287-050-2BB5E3F6/Runners-Verrazano-Narrows-Bridge-New-York-City-Marathon-2005.jpg" },
@@ -26,10 +27,9 @@ const Home = () => {
   const navigate = useNavigate();
   const [showMore, setShowMore] = useState(false);
   const [locationEnabled, setLocationEnabled] = useState(true);
-
-  // Show first 2 venues if not expanded
   const visibleVenues = showMore ? hostedVenues : hostedVenues.slice(0, 2);
-
+  const { user } = useUser();
+  console.log(user, '@USER INFO IN CONTEXT')
   useEffect(() => {
     if (!navigator.geolocation) {
       setLocationEnabled(false);

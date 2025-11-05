@@ -10,8 +10,22 @@ import { useNotification } from "../contexts/NotificationContext";
 import { core_services } from "../utils/api";
 import { useUser } from "../contexts/UserContext";
 
+const decodeJwt = (token: string) => {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
+    const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const pad = payload.length % 4;
+    const padded = payload + (pad ? "=".repeat(4 - pad) : "");
+    const decoded = atob(padded);
+    return JSON.parse(decoded);
+  } catch {
+    return null;
+  }
+};
+
 const Login = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const { showNotification } = useNotification();
@@ -20,29 +34,45 @@ const Login = () => {
   const { setUserFromToken } = useUser();
 
   const handleLogin = async () => {
-    // if (!email || !password) {
-    //   showNotification("Error", `Please Provide Correct Email and Password`, "error", 3000);
-    //   return;
-    // }
+    if (!email || !password) {
+      showNotification("Error", "Please provide email and password", "error", 3000);
+      return;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      showNotification("Error", "Please enter a valid email address (e.g., aaa@xyz.com).", "error", 3000);
+      return;
+    }
 
     setLoading(true);
     try {
-      const res = {
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-        "user": {
-          "id": "12345",
-          "name": "John Doe",
-          "email": "john@example.com",
-          "role": "admin"
-        },
-        "expiresIn": 3600
-      }
+      const data = await core_services.loginUser({ email, password });
+      const token: string | undefined = data?.token || data?.accessToken || "";
+      if (!token) throw new Error("No token returned from server");
 
-      login(res);
-      setUserFromToken(res.token);
+      const payload = decodeJwt(token);
+      const user = {
+        id: payload?.userId || payload?.id || null,
+        name: payload?.username || payload?.name || "",
+        email: payload?.email || email,
+        role: payload?.role || "user",
+      };
+
+      const expiresIn =
+        typeof payload?.exp === "number" && typeof payload?.iat === "number"
+          ? payload.exp - payload.iat
+          : data?.expiresIn || 0;
+
+      const resForAuth = { token, user, expiresIn };
+      login(resForAuth);
+      setUserFromToken(token);
+
+      showNotification("Success", "Logged in successfully", "success", 2000);
       navigate("/");
     } catch (err: any) {
-      showNotification("Error", `Login failed`, "error", 3000);
+      const message = err?.response?.data?.message || err?.message || "Login failed";
+      showNotification("Error", message, "error", 3000);
     } finally {
       setLoading(false);
     }
@@ -55,7 +85,7 @@ const Login = () => {
           <Loader />
         </div>
       )}
-<img src={logo} alt="logo" className="h-[100px] my-3" />
+      <img src={logo} alt="logo" className="h-[100px] my-3" />
       <div className="w-full max-w-xs">
         <Input
           size="large"
@@ -88,8 +118,9 @@ const Login = () => {
           onClick={handleLogin}
           className="bg-bg2 min-w-full rounded-full border-none text-bg1"
           disabled={loading}
-        >Sign-In</Button>
-
+        >
+          Sign-In
+        </Button>
         <p className="text-xs text-gray-500 text-center mt-8">
           © {CNAME} {new Date().getFullYear()} &nbsp;|&nbsp;.
         </p>

@@ -18,15 +18,15 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const { showNotification } = useNotification();
 
-  const [name, setName] = useState("");
+  // Updated fields to match new API
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [age, setAge] = useState(""); 
-  const [mobile, setMobile] = useState("");
+  const [location, setLocation] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleRegister = async () => {
-    if (!name || !email || !age || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword || !location) {
       showNotification("Error", "Please fill all required fields.", "error", 3000);
       return;
     }
@@ -37,12 +37,6 @@ const Register = () => {
       return;
     }
 
-    const parsedAge = parseInt(age);
-    if (isNaN(parsedAge) || parsedAge < 14 || parsedAge > 75) {
-      showNotification("Error", "Age must be between 14 and 75.", "error", 3000);
-      return;
-    }
-
     if (password !== confirmPassword) {
       showNotification("Error", "Passwords do not match.", "error", 3000);
       return;
@@ -50,11 +44,12 @@ const Register = () => {
 
     setLoading(true);
     try {
+      // ✅ Using new API function
       await core_services.registerUser({
-        name,
-        age: parsedAge, // ✅ Send parsed age
+        username,
         email,
         password,
+        location,
       });
 
       showNotification("Success", "Account created successfully!", "success", 3000);
@@ -75,14 +70,14 @@ const Register = () => {
       )}
       <img src={logo} alt="logo" className="h-[100px] my-3" />
       <div className="w-full max-w-xs text-left">
-        <label className="text-sm ml-2 mb-1 inline-block">Full Name <span className="text-red-500">*</span></label>
+        <label className="text-sm ml-2 mb-1 inline-block">Username <span className="text-red-500">*</span></label>
         <Input
           size="large"
           prefix={<UserOutlined />}
-          placeholder="Full Name"
+          placeholder="Username"
           className="mb-4 rounded-full bg-bg3 text-gray-600 border-gray-700"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
 
         <label className="text-sm ml-2 mb-1 inline-block">Email <span className="text-red-500">*</span></label>
@@ -95,26 +90,13 @@ const Register = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <label className="text-sm ml-2 mb-1 inline-block">Age <span className="text-red-500">*</span></label>
+        <label className="text-sm ml-2 mb-1 inline-block">Location <span className="text-red-500">*</span></label>
         <Input
           size="large"
-          type="number"
-          placeholder="Age"
+          placeholder="Location"
           className="mb-4 rounded-full bg-bg3 text-gray-600 border-gray-700"
-          value={age}
-          onChange={(e) => setAge(e.target.value)}
-        />
-
-        <label className="text-sm ml-2 mb-1 inline-block">Mobile Number</label>
-        <Input
-          size="large"
-          prefix={<span className="text-gray-500 text-xs pl-1">+91</span>}
-          placeholder="Mobile Number"
-          type="tel"
-          maxLength={10}
-          className="mb-4 rounded-full bg-bg3 text-gray-600 border-gray-700"
-          value={mobile}
-          onChange={(e) => setMobile(e.target.value)}
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
         />
 
         <label className="text-sm ml-2 mb-1 inline-block">Password <span className="text-red-500">*</span></label>

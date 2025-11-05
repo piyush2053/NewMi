@@ -33,8 +33,7 @@ export const UserProvider: React.FC<ReactNode> = ({ children }) => {
     try {
       const decoded: any = jwtDecode(token);
       setToken(token)
-
-      const fullUserData = await core_services.getUserDataByEmail(decoded.email);
+      const fullUserData = await decoded;
       setUser(fullUserData);
     } catch (err) {
       console.error("Failed to set user from token", err);
