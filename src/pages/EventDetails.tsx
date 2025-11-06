@@ -62,7 +62,7 @@ const EventDetails = () => {
     );
 
   const handleJoin = () => {
-    showNotification("Success", "Event created successfully!", "success", 3000);
+    showNotification("Joined", `You Joined ${event?.title}!`, "success", 3000);
   };
 
   return (
