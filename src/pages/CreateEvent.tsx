@@ -1,25 +1,67 @@
-import React, { useState } from 'react';
-import { IoIosArrowBack } from 'react-icons/io';
-import FooterNav from '../components/FooterNav';
+import React, { useState, useEffect } from "react";
+import { IoIosArrowBack } from "react-icons/io";
+import FooterNav from "../components/FooterNav";
+import { core_services } from "../utils/api";
+import axios from "axios";
+import { useUser } from "../contexts/UserContext";
+import { useNotification } from "../contexts/NotificationContext";
 
-const suggestedTitles = ['Turf Cricket', 'Garba Night', 'House Party', 'Birthday Bash', 'Corporate Meetup'];
-const categories = ['Sports', 'Music', 'Party', 'Workshop', 'Other'];
+const suggestedTitles = ["Turf Cricket", "Garba Night", "House Party", "Birthday Bash", "Corporate Meetup"];
 
 const CreateEvent = () => {
-  const [eventTitle, setEventTitle] = useState('');
-  const [eventDesc, setEventDesc] = useState('');
+  const [eventTitle, setEventTitle] = useState("");
+  const [eventDesc, setEventDesc] = useState("");
   const [numTickets, setNumTickets] = useState(10);
-  const [directJoin, setDirectJoin] = useState(true); // true = direct join, false = request
-  const [eventCategory, setEventCategory] = useState('');
-  const [eventDate, setEventDate] = useState('');
-  const [eventTime, setEventTime] = useState('');
+  const [directJoin, setDirectJoin] = useState(true);
+  const [eventCategory, setEventCategory] = useState("");
+  const [eventDate, setEventDate] = useState("");
+  const [eventTime, setEventTime] = useState("");
+  const [location, setLocation] = useState("");
+  const [categories, setCategories] = useState([]);
+  const { user } = useUser();
+  const { showNotification } = useNotification();
 
-  const handleCreateEvent = () => {
-    console.log({ eventTitle, eventDesc, numTickets, directJoin: directJoin ? 'yes' : 'no', eventCategory, eventDate, eventTime });
-    alert('Event Created! Check console for details.');
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await core_services.getCategories()
+        setCategories(res || []);
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleCreateEvent = async () => {
+    if (!eventTitle || !eventDesc || !eventCategory || !eventDate || !eventTime || !location) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    const eventDateTime = new Date(`${eventDate}T${eventTime}:00Z`).toISOString();
+
+    const payload = {
+      eventTitle,
+      eventDesc,
+      categoryId: eventCategory, 
+      location,
+      userId: user?.userId || "UNKNOWN_USER",
+      eventTime: eventDateTime,
+    };
+
+    try {
+      const response = await core_services.createEvent(payload);
+      console.log("✅ Event Created:", response);
+      showNotification("Success", "Event created successfully!", "success", 3000);
+    } catch (err) {
+      console.error("❌ Error creating event:", err);
+      alert("Failed to create event. Check console for details.");
+      showNotification("Success", "Event created successfully!", "success", 3000);
+    }
   };
 
-  const handleTitleClick = (title) => {
+  const handleTitleClick = (title: string) => {
     setEventTitle(title);
   };
 
@@ -67,6 +109,19 @@ const CreateEvent = () => {
           />
         </section>
 
+        {/* ✅ Location Input */}
+        <section>
+          <h2 className="text-md font-medium text-gray-300 mb-2">Location</h2>
+          <input
+            type="text"
+            placeholder="Enter event location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            className="w-full p-3 rounded-lg bg-[#2C2C2C] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
+          />
+        </section>
+
+        {/* ✅ Dynamic Categories Dropdown */}
         <section>
           <h2 className="text-md font-medium text-gray-300 mb-2">Event Category</h2>
           <select
@@ -74,30 +129,57 @@ const CreateEvent = () => {
             onChange={(e) => setEventCategory(e.target.value)}
             className="w-full p-3 rounded-lg bg-[#2C2C2C] text-white focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
           >
-            <option value="" disabled>Select category</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
+            <option value="" disabled>
+              Select category
+            </option>
+            {categories.map((cat: any) => (
+              <option key={cat.CategoryId} value={cat.CategoryId}>
+                {cat.CategoryName}
+              </option>
             ))}
           </select>
         </section>
 
-        <section>
-          <h2 className="text-md font-medium text-gray-300 mb-2">Date & Time</h2>
-          <div className="flex gap-4">
-            <input
-              type="date"
-              value={eventDate}
-              onChange={(e) => setEventDate(e.target.value)}
-              className="flex-1 p-3 rounded-lg bg-[#2C2C2C] text-white focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
-            />
-            <input
-              type="time"
-              value={eventTime}
-              onChange={(e) => setEventTime(e.target.value)}
-              className="flex-1 p-3 rounded-lg bg-[#2C2C2C] text-white focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
-            />
-          </div>
-        </section>
+      <section>
+  <h2 className="text-md font-medium text-gray-300 mb-2">Date & Time</h2>
+  <div className="flex gap-4">
+    <input
+      type="date"
+      value={eventDate}
+      onChange={(e) => {
+        const selectedDate = e.target.value;
+        const today = new Date().toISOString().split("T")[0];
+        if (selectedDate < today) {
+          alert("You cannot select a past date!");
+          return;
+        }
+        setEventDate(selectedDate);
+      }}
+      className="flex-1 p-3 rounded-lg bg-[#2C2C2C] text-white focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
+    />
+    <input
+      type="time"
+      value={eventTime}
+      onChange={(e) => {
+        const selectedTime = e.target.value;
+        const now = new Date();
+
+        // Only validate time if selected date is today
+        if (eventDate) {
+          const selectedDateTime = new Date(`${eventDate}T${selectedTime}`);
+          if (selectedDateTime < now) {
+            alert("You cannot select a past time!");
+            return;
+          }
+        }
+
+        setEventTime(selectedTime);
+      }}
+      className="flex-1 p-3 rounded-lg bg-[#2C2C2C] text-white focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
+    />
+  </div>
+</section>
+
 
         <section>
           <h2 className="text-md font-medium text-gray-300 mb-2">Number of Passes / Tickets</h2>
@@ -122,18 +204,18 @@ const CreateEvent = () => {
           <h2 className="text-md font-medium text-gray-300 mb-2">Direct Join or Request to Join</h2>
           <div
             className={`w-16 h-8 rounded-full p-1 flex items-center cursor-pointer transition-colors duration-300 ${
-              directJoin ? 'bg-[#4CAF50]' : 'bg-gray-600'
+              directJoin ? "bg-[#4CAF50]" : "bg-gray-600"
             }`}
             onClick={() => setDirectJoin(!directJoin)}
           >
             <div
               className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                directJoin ? 'translate-x-8' : 'translate-x-0'
+                directJoin ? "translate-x-8" : "translate-x-0"
               }`}
             ></div>
           </div>
           <div className="mt-1 text-sm text-gray-400">
-            {directJoin ? 'Direct Join' : 'Request to Join'}
+            {directJoin ? "Direct Join" : "Request to Join"}
           </div>
         </section>
       </main>

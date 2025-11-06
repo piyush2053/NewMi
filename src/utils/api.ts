@@ -70,4 +70,101 @@ export const core_services = {
       throw error.response?.data || error.message;
     }
   },
+  
+  // Get All Events
+  getAllEvents: async () => {
+    try {
+      const token = getToken();
+      const response = await axios.get(`${API_BASE_URL}/events`, {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Create Event
+  createEvent: async (eventData: {
+    eventTitle: string;
+    eventDesc: string;
+    categoryId: string;
+    location: string;
+    userId: string;
+    eventTime: string;
+  }) => {
+    try {
+      const token = getToken();
+      const response = await axios.post(`${API_BASE_URL}/events`, eventData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Update Event by ID
+  updateEvent: async (
+    eventId: string,
+    eventData: {
+      eventTitle: string;
+      eventDesc: string;
+      categoryId: string;
+      location: string;
+      userId: string;
+      eventTime: string;
+    }
+  ) => {
+    try {
+      const token = getToken();
+      const response = await axios.put(
+        `${API_BASE_URL}/events/${eventId}`,
+        eventData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Get Event by ID
+  getEventById: async (eventId: string) => {
+    try {
+      const token = getToken();
+      const response = await axios.get(`${API_BASE_URL}/events/${eventId}`, {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  getCategories: async () => {
+    try {
+      const token = getToken();
+      const response = await axios.get(`${API_BASE_URL}/event-category`, {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
 };

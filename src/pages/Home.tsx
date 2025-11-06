@@ -1,41 +1,36 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import FooterNav from "../components/FooterNav";
-import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
-import VenueSection from "../components/VenueSection";
 import { useUser } from "../contexts/UserContext";
-
-const events = [
-  { id: 1, title: "City Marathon", subtitle: "Running Event", img: "https://cdn.britannica.com/87/146287-050-2BB5E3F6/Runners-Verrazano-Narrows-Bridge-New-York-City-Marathon-2005.jpg" },
-  { id: 2, title: "Live Concert", subtitle: "Music Event", img: "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=400&q=80" },
-  { id: 3, title: "Food Festival", subtitle: "Culinary Event", img: "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=400&q=80" },
-  { id: 4, title: "Art Expo", subtitle: "Art Exhibition", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd4HZhuvY5OokI_mdG5tWklGNB8KUVbOos6g&s" },
-];
+import VenueSection from "../components/VenueSection";
+import { core_services } from "../utils/api";
+import Loader from "../components/Loader";
 
 const hostedVenues = [
   { id: 101, name: "Carlton Banquet Hall", desc: "Luxury indoor hall", img: "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=400&q=80" },
   { id: 102, name: "Green Turf Ground", desc: "Cricket Box - Turf", img: "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=400&q=80" },
   { id: 103, name: "Blue Lagoon Resort", desc: "Pool + Party venue", img: "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=400&q=80" },
   { id: 104, name: "The Roof Deck", desc: "Open sky cafe event space", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
-  { id: 104, name: "Bhukkad dhabha", desc: "Dinner with Strangers", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
-  { id: 104, name: "Skyline", desc: "Open sky cafe event space", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
+  { id: 105, name: "Bhukkad Dhabha", desc: "Dinner with Strangers", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
+  { id: 106, name: "Skyline", desc: "Open sky cafe event space", img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" },
 ];
 
 const Home = () => {
   const navigate = useNavigate();
   const [showMore, setShowMore] = useState(false);
   const [locationEnabled, setLocationEnabled] = useState(true);
-  const visibleVenues = showMore ? hostedVenues : hostedVenues.slice(0, 2);
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   const { user } = useUser();
-  console.log(user, '@USER INFO IN CONTEXT')
+
+  const visibleVenues = showMore ? hostedVenues : hostedVenues.slice(0, 2);
+
   useEffect(() => {
     if (!navigator.geolocation) {
       setLocationEnabled(false);
       return;
     }
-
     navigator.geolocation.getCurrentPosition(
       () => setLocationEnabled(true),
       () => setLocationEnabled(false)
@@ -49,13 +44,27 @@ const Home = () => {
     );
   };
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setLoading(true);
+      try {
+        const data = await core_services.getAllEvents();
+        setEvents(data || []);
+      } catch (err) {
+        console.error("Error fetching events:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEvents();
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col font-display bg-bg1 text-white relative">
       <Helmet>
         <title>NearMi</title>
       </Helmet>
 
-      {/* Floating top notification for location */}
       {!locationEnabled && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-start bg-black/30 backdrop-blur-sm">
           <div className="mt-4 px-6 py-3 bg-yellow-500 text-black font-bold rounded-full shadow-lg flex items-center gap-3">
@@ -70,35 +79,42 @@ const Home = () => {
         </div>
       )}
 
-      {/* Main content */}
       <main className={`p-4 flex-1 space-y-8 ${!locationEnabled ? "blur-sm pointer-events-none" : ""}`}>
         <section>
           <h2 className="text-lg font-bold mb-4">Nearby Events</h2>
 
-          {/* Events Carousel */}
-          <div className="flex gap-4 p-3 overflow-x-auto scrollbar-hide">
-            {events?.map((event) => (
-              <div
-                key={event.id}
-                onClick={() => navigate(`/event/${event.id}`)}
-                className="h-[200px] w-[200px] rounded-lg overflow-hidden flex-shrink-0 cursor-pointer transform transition-transform duration-200 hover:scale-110 relative"
-              >
-                <img
-                  src={event.img}
-                  alt={event.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-0 left-0 w-full bg-black/40 backdrop-blur-sm text-white p-3">
-                  <p className="font-bold text-sm">{event.title}</p>
-                  <p className="text-xs">{event.subtitle}</p>
+          {loading ? (
+            <div className="flex flex-wrap justify-center">
+            <Loader/>
+            </div>
+          ) : events.length > 0 ? (
+            <div className="flex gap-4 p-3 overflow-x-auto scrollbar-hide">
+              {events.map((event: any) => (
+                <div
+                  key={event.EventID}
+                  onClick={() => navigate(`/event/${event.EventID}`)}
+                  className="h-[200px] w-[200px] rounded-lg overflow-hidden flex-shrink-0 cursor-pointer transform transition-transform duration-200 hover:scale-110 relative"
+                >
+                  <img
+                    src={"https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=400&q=80"}
+                    alt={event.EventTitle}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-0 left-0 w-full bg-black/40 backdrop-blur-sm text-white p-3">
+                    <p className="font-bold text-sm">{event.EventTitle}</p>
+                    <p className="text-xs">{event.EventDesc}</p>
+                    <p className="text-[10px] mt-1">{new Date(event.EventTime).toLocaleString()}</p>
+                    <p className="text-[10px] text-gray-300">{event.Location}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-400">No events found.</p>
+          )}
 
           <div className="mt-5 px-3">
             <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Filters</p>
-
             <div className="flex gap-3 overflow-x-auto scrollbar-hide">
               {["Sports", "Dance", "Music", "Food"].map((category) => (
                 <div
@@ -112,23 +128,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* <section>
-          <h2 className="text-lg font-bold mb-4">Want to host an event?</h2>
-          <div className="flex gap-4">
-            <div
-              className="w-28 h-28 rounded-lg flex items-center justify-center cursor-pointer transform transition-transform duration-200 hover:scale-110 relative overflow-hidden"
-              onClick={() => navigate("/create_event")}
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-green-400/50 to-green-600/50"></div>
-              <div className="relative z-10">
-                <FiPlus size={24} color="white" />
-              </div>
-            </div>
-          </div>
-        </section> */}
-
-
-        <VenueSection hostedVenues={hostedVenues} navigate={navigate} />
+        <VenueSection hostedVenues={visibleVenues} navigate={navigate} />
       </main>
 
       <FooterNav />
