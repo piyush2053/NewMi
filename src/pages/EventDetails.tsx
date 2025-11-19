@@ -7,40 +7,102 @@ import FooterNav from "../components/FooterNav";
 import { core_services } from "../utils/api";
 import Loader from "../components/Loader";
 import { useNotification } from "../contexts/NotificationContext";
+import { useUser } from "../contexts/UserContext";
 
 const EventDetails = () => {
   const { eventId } = useParams();
+  const { user } = useUser();
   const { showNotification } = useNotification();
   const navigate = useNavigate();
-  const [event, setEvent] = useState(null);
+  const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [attendees, setAttendees] = useState([]);
+  const [alreadyJoined, setAlreadyJoined] = useState(false);
+
+  // ----------------------------------------------------------
+  // LOAD EVENT + ATTENDEES ON FIRST LOAD ONLY
+  // ----------------------------------------------------------
+  const loadEventDetails = async () => {
+    try {
+      const data = await core_services.getEventById(eventId);
+
+      setEvent({
+        id: data.EventID,
+        title: data.EventTitle,
+        description: data.EventDesc,
+        location: data.Location,
+        date: new Date(data.EventTime).toDateString(),
+        time: new Date(data.EventTime).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        img:
+          "https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf?auto=format&fit=crop&w=400&q=80",
+      });
+
+      // Fetch attendees
+      const people = await core_services.getEventAttendees(eventId);
+      setAttendees(people);
+      const joined = people.some(
+        async (p: any) => p.UserId === await user?.userId
+      );
+
+      setAlreadyJoined(joined);
+
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        const data = await core_services.getEventById(eventId);
-        setEvent({
-          id: data.EventID,
-          title: data.EventTitle,
-          description: data.EventDesc,
-          location: data.Location,
-          date: new Date(data.EventTime).toDateString(),
-          time: new Date(data.EventTime).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          img:
-            "https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf?auto=format&fit=crop&w=400&q=80", // default image
-        });
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+    const fetchEventInfo = async () => {
+      await loadEventDetails();
     };
-    fetchEvent();
+
+    fetchEventInfo();
   }, [eventId]);
 
+
+  // ----------------------------------------------------------
+  // JOIN EVENT — ONLY CALL API + UPDATE UI (no reload)
+  // ----------------------------------------------------------
+  const handleJoin = async () => {
+    try {
+      if (!user?.userId) {
+        showNotification("Login Required", "Please login first.", "error");
+        return;
+      }
+
+      await core_services.addEventAttender({
+        eventId,
+        userId: user.userId,
+      });
+
+      // Instantly update UI
+      setAlreadyJoined(true);
+
+      // Add user into attendees for instant UI accuracy
+      setAttendees((prev) => [
+        ...prev,
+        {
+          EventID: eventId,
+          UserId: user.userId,
+          CreatedAt: new Date().toISOString(),
+        },
+      ]);
+
+      showNotification("Joined", `You joined ${event?.title}!`, "success");
+    } catch (err) {
+      console.error(err);
+      showNotification("Error", "Failed to join event.", "error");
+    }
+  };
+
+  // ----------------------------------------------------------
+  // LOADING UI
+  // ----------------------------------------------------------
   if (loading)
     return (
       <div className="flex justify-center items-center min-h-screen text-white">
@@ -61,10 +123,6 @@ const EventDetails = () => {
       </div>
     );
 
-  const handleJoin = () => {
-    showNotification("Joined", `You Joined ${event?.title}!`, "success", 3000);
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-bg1 text-white font-display">
       <Helmet>
@@ -83,6 +141,7 @@ const EventDetails = () => {
             <h1 className="text-2xl font-bold">{event.title}</h1>
           </div>
         </div>
+
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -105,13 +164,16 @@ const EventDetails = () => {
           </div>
         </motion.div>
 
-        {/* Join Button */}
+        {/* JOIN BUTTON */}
         <div className="sticky bottom-16 px-5 py-3 bg-bg1 border-t border-gray-700">
           <button
-            onClick={handleJoin}
-            className="w-full bg-green-600 hover:bg-green-700 py-3 rounded-xl font-semibold transition-all"
+            onClick={alreadyJoined ? undefined : handleJoin}
+            disabled={alreadyJoined}
+            className={`w-full py-3 rounded-xl font-semibold transition-all
+              ${alreadyJoined ? "bg-gray-500" : "bg-green-600 hover:bg-green-700"}
+            `}
           >
-            Request to Join Event
+            {alreadyJoined ? "Already Joined" : "Request to Join Event"}
           </button>
         </div>
       </main>

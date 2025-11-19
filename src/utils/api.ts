@@ -70,7 +70,7 @@ export const core_services = {
       throw error.response?.data || error.message;
     }
   },
-  
+
   // Get All Events
   getAllEvents: async () => {
     try {
@@ -167,4 +167,134 @@ export const core_services = {
       throw error.response?.data || error.message;
     }
   },
+  createMessage: async (messageData: {
+    eventId: string;
+    userId: string;
+    messageText: string;
+  }) => {
+    try {
+      const token = getToken();
+      const response = await axios.post(
+        `${API_BASE_URL}/message`,
+        messageData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Update Message by ID
+  updateMessage: async (
+    messageId: string,
+    messageData: {
+      eventId: string;
+      userId: string;
+      messageText: string;
+    }
+  ) => {
+    try {
+      const token = getToken();
+      const response = await axios.put(
+        `${API_BASE_URL}/message/${messageId}`,
+        messageData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Get Messages By Event ID
+  getMessagesByEvent: async (eventId: string) => {
+    try {
+      const token = getToken();
+      const response = await axios.get(
+        `${API_BASE_URL}/message/${eventId}`,
+        {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Delete Message
+  deleteMessage: async (messageId: string, userId: string) => {
+    try {
+      const token = getToken();
+      const response = await axios.delete(
+        `${API_BASE_URL}/message/${messageId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+          data: { userId }, // DELETE with body
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  getEventAttendees: async (eventId: string) => {
+    try {
+      const token = getToken();
+      const response = await axios.get(
+        `${API_BASE_URL}/event-attender/${eventId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+  addEventAttender: async ({
+    eventId,
+    userId,
+  }: {
+    eventId: string;
+    userId: string;
+  }) => {
+    try {
+      const token = getToken();
+      const response = await axios.post(
+        `${API_BASE_URL}/event-attender`,
+        { eventId, userId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+
 };
