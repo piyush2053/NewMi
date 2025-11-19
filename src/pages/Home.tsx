@@ -6,6 +6,7 @@ import { useUser } from "../contexts/UserContext";
 import VenueSection from "../components/VenueSection";
 import { core_services } from "../utils/api";
 import Loader from "../components/Loader";
+import EventCardSkeleton from "../skeletons/EventsCardSkeleton";
 
 const hostedVenues = [
   { id: 101, name: "Carlton Banquet Hall", desc: "Luxury indoor hall", img: "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=400&q=80" },
@@ -20,30 +21,53 @@ const Home = () => {
   const navigate = useNavigate();
   const [showMore, setShowMore] = useState(false);
   const [locationEnabled, setLocationEnabled] = useState(true);
+
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const [userCoords, setUserCoords] = useState<{ lat: number; lon: number } | null>(null);
+
   const { user } = useUser();
 
   const visibleVenues = showMore ? hostedVenues : hostedVenues.slice(0, 2);
 
+  // ---------------------------------------------------------
+  // Get User Location
+  // ---------------------------------------------------------
   useEffect(() => {
     if (!navigator.geolocation) {
       setLocationEnabled(false);
       return;
     }
+
     navigator.geolocation.getCurrentPosition(
-      () => setLocationEnabled(true),
+      (pos) => {
+        setLocationEnabled(true);
+        setUserCoords({
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+        });
+      },
       () => setLocationEnabled(false)
     );
   }, []);
 
   const requestLocation = () => {
     navigator.geolocation.getCurrentPosition(
-      () => setLocationEnabled(true),
+      (pos) => {
+        setLocationEnabled(true);
+        setUserCoords({
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+        });
+      },
       () => setLocationEnabled(false)
     );
   };
 
+  // ---------------------------------------------------------
+  // Fetch Events
+  // ---------------------------------------------------------
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
@@ -58,6 +82,26 @@ const Home = () => {
     };
     fetchEvents();
   }, []);
+
+  // ---------------------------------------------------------
+  // Calculate Distance — Haversine Formula
+  // ---------------------------------------------------------
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371; // km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return (R * c).toFixed(1); // 1 decimal km
+  };
 
   return (
     <div className="min-h-screen flex flex-col font-display bg-bg1 text-white relative">
@@ -80,14 +124,19 @@ const Home = () => {
       )}
 
       <main className={`p-4 flex-1 space-y-8 ${!locationEnabled ? "blur-sm pointer-events-none" : ""}`}>
+
+        {/* -------------------- NEARBY EVENTS -------------------- */}
         <section>
           <h2 className="text-lg font-bold mb-4">Nearby Events</h2>
-
           {loading ? (
-            <div className="flex flex-wrap justify-center">
-            <Loader/>
+            <div className="flex gap-4 p-3 overflow-x-auto scrollbar-hide">
+              <EventCardSkeleton />
+              <EventCardSkeleton />
+              <EventCardSkeleton />
+              <EventCardSkeleton />
             </div>
           ) : events.length > 0 ? (
+
             <div className="flex gap-4 p-3 overflow-x-auto scrollbar-hide">
               {events.map((event: any) => (
                 <div
@@ -100,11 +149,25 @@ const Home = () => {
                     alt={event.EventTitle}
                     className="w-full h-full object-cover"
                   />
+
                   <div className="absolute bottom-0 left-0 w-full bg-black/40 backdrop-blur-sm text-white p-3">
                     <p className="font-bold text-sm">{event.EventTitle}</p>
                     <p className="text-xs">{event.EventDesc}</p>
+
                     <p className="text-[10px] mt-1">{new Date(event.EventTime).toLocaleString()}</p>
-                    <p className="text-[10px] text-gray-300">{event.Location}</p>
+
+                    {/* -------------------- DISTANCE FROM USER -------------------- */}
+                    <p className="text-[10px] text-gray-300">
+                      {(() => {
+                        if (!userCoords) return "Calculating distance...";
+
+                        const [lat, lon] = (event.Location || "").split(",").map(Number);
+                        if (!lat || !lon) return "Location unavailable";
+
+                        const dist = calculateDistance(userCoords.lat, userCoords.lon, lat, lon);
+                        return `${dist} km away`;
+                      })()}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -113,6 +176,7 @@ const Home = () => {
             <p className="text-center text-gray-400">No events found.</p>
           )}
 
+          {/* Filters */}
           <div className="mt-5 px-3">
             <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Filters</p>
             <div className="flex gap-3 overflow-x-auto scrollbar-hide">
@@ -128,6 +192,7 @@ const Home = () => {
           </div>
         </section>
 
+        {/* -------------------- HOSTED VENUES -------------------- */}
         <VenueSection hostedVenues={visibleVenues} navigate={navigate} />
       </main>
 

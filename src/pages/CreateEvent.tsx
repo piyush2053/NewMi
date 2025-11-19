@@ -16,15 +16,21 @@ const CreateEvent = () => {
   const [eventCategory, setEventCategory] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState(""); // Will store "lat, lon" string
   const [categories, setCategories] = useState([]);
+
+  const [coords, setCoords] = useState({ lat: "", lon: "" }); // ---------> NEW
+
   const { user } = useUser();
   const { showNotification } = useNotification();
 
+  // ---------------------------------------------------------
+  // Load Categories
+  // ---------------------------------------------------------
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await core_services.getCategories()
+        const res = await core_services.getCategories();
         setCategories(res || []);
       } catch (err) {
         console.error("Failed to fetch categories:", err);
@@ -33,6 +39,36 @@ const CreateEvent = () => {
     fetchCategories();
   }, []);
 
+  // ---------------------------------------------------------
+  // Fetch Live GPS Location
+  // ---------------------------------------------------------
+  const fetchLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation not supported in this browser.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+
+        setCoords({ lat: latitude.toString(), lon: longitude.toString() });
+
+        // We store lat,lon as string — this is what will go to the API
+        const finalString = `${latitude}, ${longitude}`;
+        setLocation(finalString);
+
+        showNotification("Location Updated", "GPS location captured successfully!", "success", 2000);
+      },
+      () => {
+        alert("Failed to get current location.");
+      }
+    );
+  };
+
+  // ---------------------------------------------------------
+  // Create Event API Call
+  // ---------------------------------------------------------
   const handleCreateEvent = async () => {
     if (!eventTitle || !eventDesc || !eventCategory || !eventDate || !eventTime || !location) {
       alert("Please fill all required fields.");
@@ -44,10 +80,12 @@ const CreateEvent = () => {
     const payload = {
       eventTitle,
       eventDesc,
-      categoryId: eventCategory, 
-      location,
+      categoryId: eventCategory,
+      location: location, // sending "lat, lon"
       userId: user?.userId || "UNKNOWN_USER",
       eventTime: eventDateTime,
+      directJoin,
+      numTickets,
     };
 
     try {
@@ -57,7 +95,6 @@ const CreateEvent = () => {
     } catch (err) {
       console.error("❌ Error creating event:", err);
       alert("Failed to create event. Check console for details.");
-      showNotification("Success", "Event created successfully!", "success", 3000);
     }
   };
 
@@ -74,6 +111,8 @@ const CreateEvent = () => {
       </header>
 
       <main className="flex-1 p-4 space-y-6">
+        
+        {/* Title */}
         <section>
           <h2 className="text-md font-medium text-gray-300 mb-2">Event Title</h2>
           <input
@@ -82,14 +121,15 @@ const CreateEvent = () => {
             maxLength={50}
             value={eventTitle}
             onChange={(e) => setEventTitle(e.target.value)}
-            className="w-full p-3 rounded-lg bg-[#2C2C2C] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
+            className="w-full p-3 rounded-lg bg-[#2C2C2C] text-white placeholder-gray-500"
           />
+
           <div className="flex flex-wrap mt-2 gap-2">
             {suggestedTitles.map((title) => (
               <span
                 key={title}
                 onClick={() => handleTitleClick(title)}
-                className="cursor-pointer bg-[#4CAF50] text-black px-3 py-1 rounded-full text-sm hover:bg-[#45a049] transition"
+                className="cursor-pointer bg-[#4CAF50] text-black px-3 py-1 rounded-full text-sm"
               >
                 {title}
               </span>
@@ -97,6 +137,7 @@ const CreateEvent = () => {
           </div>
         </section>
 
+        {/* Description */}
         <section>
           <h2 className="text-md font-medium text-gray-300 mb-2">Event Description</h2>
           <textarea
@@ -104,30 +145,38 @@ const CreateEvent = () => {
             maxLength={80}
             value={eventDesc}
             onChange={(e) => setEventDesc(e.target.value)}
-            className="w-full p-3 rounded-lg bg-[#2C2C2C] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
+            className="w-full p-3 rounded-lg bg-[#2C2C2C] text-white"
             rows={3}
           />
         </section>
 
-        {/* ✅ Location Input */}
+        {/* Location */}
         <section>
           <h2 className="text-md font-medium text-gray-300 mb-2">Location</h2>
+
           <input
             type="text"
-            placeholder="Enter event location"
+            placeholder="Lat, Lon will appear here"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="w-full p-3 rounded-lg bg-[#2C2C2C] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
+            className="w-full p-3 rounded-lg bg-[#2C2C2C] text-white"
           />
+
+          <button
+            onClick={fetchLocation}
+            className="mt-2 px-3 py-1 bg-green-600 rounded-lg text-black text-sm hover:bg-green-700"
+          >
+            Use My Current Location
+          </button>
         </section>
 
-        {/* ✅ Dynamic Categories Dropdown */}
+        {/* Category Dropdown */}
         <section>
           <h2 className="text-md font-medium text-gray-300 mb-2">Event Category</h2>
           <select
             value={eventCategory}
             onChange={(e) => setEventCategory(e.target.value)}
-            className="w-full p-3 rounded-lg bg-[#2C2C2C] text-white focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
+            className="w-full p-3 rounded-lg bg-[#2C2C2C] text-white"
           >
             <option value="" disabled>
               Select category
@@ -140,76 +189,57 @@ const CreateEvent = () => {
           </select>
         </section>
 
-      <section>
-  <h2 className="text-md font-medium text-gray-300 mb-2">Date & Time</h2>
-  <div className="flex gap-4">
-    <input
-      type="date"
-      value={eventDate}
-      onChange={(e) => {
-        const selectedDate = e.target.value;
-        const today = new Date().toISOString().split("T")[0];
-        if (selectedDate < today) {
-          alert("You cannot select a past date!");
-          return;
-        }
-        setEventDate(selectedDate);
-      }}
-      className="flex-1 p-3 rounded-lg bg-[#2C2C2C] text-white focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
-    />
-    <input
-      type="time"
-      value={eventTime}
-      onChange={(e) => {
-        const selectedTime = e.target.value;
-        const now = new Date();
+        {/* Date + Time */}
+        <section>
+          <h2 className="text-md font-medium text-gray-300 mb-2">Date & Time</h2>
+          <div className="flex gap-4">
+            <input
+              type="date"
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
+              className="flex-1 p-3 rounded-lg bg-[#2C2C2C] text-white"
+            />
 
-        // Only validate time if selected date is today
-        if (eventDate) {
-          const selectedDateTime = new Date(`${eventDate}T${selectedTime}`);
-          if (selectedDateTime < now) {
-            alert("You cannot select a past time!");
-            return;
-          }
-        }
+            <input
+              type="time"
+              value={eventTime}
+              onChange={(e) => setEventTime(e.target.value)}
+              className="flex-1 p-3 rounded-lg bg-[#2C2C2C] text-white"
+            />
+          </div>
+        </section>
 
-        setEventTime(selectedTime);
-      }}
-      className="flex-1 p-3 rounded-lg bg-[#2C2C2C] text-white focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
-    />
-  </div>
-</section>
-
-
+        {/* Tickets */}
         <section>
           <h2 className="text-md font-medium text-gray-300 mb-2">Number of Passes / Tickets</h2>
           <div className="flex items-center gap-4">
             <button
               onClick={() => setNumTickets((prev) => Math.max(1, prev - 1))}
-              className="bg-[#3A3A3A] px-3 py-1 rounded-lg hover:bg-[#4CAF50] transition"
+              className="bg-[#3A3A3A] px-3 py-1 rounded-lg"
             >
               -
             </button>
             <span>{numTickets}</span>
             <button
               onClick={() => setNumTickets((prev) => prev + 1)}
-              className="bg-[#3A3A3A] px-3 py-1 rounded-lg hover:bg-[#4CAF50] transition"
+              className="bg-[#3A3A3A] px-3 py-1 rounded-lg"
             >
               +
             </button>
           </div>
         </section>
 
+        {/* Direct Join Toggle */}
         <section>
           <h2 className="text-md font-medium text-gray-300 mb-2">Direct Join or Request to Join</h2>
           <div
-            className={`w-16 h-8 rounded-full p-1 flex items-center cursor-pointer transition-colors duration-300 ${
+            className={`w-16 h-8 rounded-full p-1 flex items-center cursor-pointer transition-colors ${
               directJoin ? "bg-[#4CAF50]" : "bg-gray-600"
             }`}
             onClick={() => setDirectJoin(!directJoin)}
           >
             <div
-              className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+              className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform ${
                 directJoin ? "translate-x-8" : "translate-x-0"
               }`}
             ></div>
@@ -223,11 +253,12 @@ const CreateEvent = () => {
       <footer className="p-4 bg-bg1 flex justify-center">
         <button
           onClick={handleCreateEvent}
-          className="bg-[#4CAF50] transform transition-transform duration-200 hover:scale-110 relative py-3 rounded-full text-bg1 px-5 font-semibold text-sm hover:bg-[#45a049] transition-colors"
+          className="bg-[#4CAF50] py-3 rounded-full px-5 font-semibold text-sm hover:bg-[#45a049]"
         >
           Create Event
         </button>
       </footer>
+
       <FooterNav />
     </div>
   );

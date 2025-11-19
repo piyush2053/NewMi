@@ -35,11 +35,10 @@ const MessagesList = () => {
           return (
             <div
               key={event.EventID}
-              className="flex items-center gap-3 p-3 bg-[#2C2C2C] rounded-lg cursor-pointer hover:bg-[#3A3A3A] transition"
+              className="flex items-center gap-3 p-3 bg-bg4 rounded-lg cursor-pointer hover:bg-[#3A3A3A] transition"
               onClick={() => navigate(`/messages/${event.EventID}`)}
             >
-              {/* Event icon */}
-              <div className="w-12 h-12 rounded-full bg-gray-500 flex items-center justify-center text-white font-bold">
+              <div className="w-12 h-12 rounded-full bg-bg5 flex items-center justify-center text-bg1 font-bold">
                 {event.EventTitle?.charAt(0) || "E"}
               </div>
 
