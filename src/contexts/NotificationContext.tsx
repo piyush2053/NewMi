@@ -27,7 +27,7 @@ const NotificationContext = createContext({
     ) => { },
 });
 interface NotificationProviderProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 export const useNotification = () => {
     const context = useContext(NotificationContext);
@@ -79,27 +79,70 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
         <NotificationContext.Provider value={{ showNotification }}>
             {children}
             <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2 items-center w-full px-4">
-                {notifications.map((notification) => (
-                    <div
-                        key={notification.id}
-                        className={`relative px-5 py-2 rounded-full shadow-lg text-white w-full max-w-sm text-left transition-all duration-300 animate-bounceIn
-              bg-bg1 border
-              ${notification.type === "success" && "border-green-400"
-                            } ${notification.type === "error" && "border-red-400"} ${notification.type === "warning" && "border-yellow-400"
-                            }`}
-                    >
-                        <button
-                            onClick={() => removeNotification(notification.id)}
-                            className="absolute right-2 bg-bg2 mt-3 px-1 rounded-full text-white text-sm hover:text-red-400 my-auto mr-3"
-                        >
-                            ✕
-                        </button>
+                {notifications?.map((notification) => (
+                    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2 items-center w-full px-4">
+                        {notifications?.map((notification) => (
+                            <div
+                                key={notification.id}
+                                className={`relative px-4 py-2 shadow-lg text-white w-full max-w-[260px] 
+                text-center transition-all duration-300 animate-bounceIn rounded-full overflow-hidden
+                bg-bg1 border flex items-center justify-center
+                ${notification.type === "success" && "border-green-400"}
+                ${notification.type === "error" && "border-red-400"}
+                ${notification.type === "warning" && "border-yellow-400"}
+            `}
+                            >
 
-                        <div className="font-semibold text-md">{notification.title}</div>
-                        <div className="text-sm text-white/90">{notification.description}</div>
+                                {/* PROGRESS BAR (10% opacity) */}
+                                <div
+                                    className={`
+                    absolute left-0 top-0 h-full opacity-90
+                    ${notification.type === "success"
+                                            ? "bg-green-500"
+                                            : notification.type === "error"
+                                                ? "bg-red-500"
+                                                : "bg-yellow-400"
+                                        }
+                `}
+                                    style={{
+                                        width: "100%",
+                                        transform: "translateX(-100%)",
+                                        animation: `fillProgress ${notification?.duration || 3000}ms linear forwards`,
+                                    }}
+                                ></div>
+
+                                {/* Close Button */}
+                                <button
+                                    onClick={() => removeNotification(notification.id)}
+                                    className={`
+                    absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 rounded-full text-[10px] font-bold
+                    ${notification.type === "success"
+                                            ? "bg-green-500 text-black"
+                                            : notification.type === "error"
+                                                ? "bg-red-500 text-black"
+                                                : "bg-yellow-400 text-black"
+                                        }
+                    hover:opacity-70
+                `}
+                                >
+                                    ✕
+                                </button>
+
+                                <div className="flex flex-col items-center justify-center relative z-10">
+                                    <div className="font-semibold text-sm leading-tight">
+                                        {notification.title}
+                                    </div>
+
+                                    <div className="text-xs text-white/80 leading-snug">
+                                        {notification.description}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 ))}
             </div>
+
         </NotificationContext.Provider>
     );
 };

@@ -35,7 +35,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      showNotification("Error", "Please provide email and password", "error", 3000);
+      showNotification("Error", "Please provide email and password", "warning", 3000);
       return;
     }
 
