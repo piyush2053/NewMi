@@ -108,10 +108,9 @@ const EventChat = () => {
         }
     };
 
-    console.log(attendees, '@@@@@@@@@@')
 
     return (
-        <div className="h-[90vh] bg-bg1 text-white flex flex-col font-sans scroll-hide">
+        <div className="min-h-screen bg-bg1 text-white flex flex-col font-sans scroll-hide">
             <header className="flex items-center p-4 bg-bg1 shadow-sm">
                 <div onClick={() => navigate("/messages")} className="cursor-pointer">
                     <IoIosArrowBack size={24} />
@@ -176,7 +175,7 @@ const EventChat = () => {
                         </div>
                     ))}
                 </main>
-                <div className="p-4 bg-bg1 flex-shrink-0">
+                <div className="p-4 bg-bg1 sticky bottom-[60px] z-40">
                     {isAdmin ? (
                         <div className="flex gap-2">
                             <div
@@ -212,7 +211,6 @@ const EventChat = () => {
                     )}
                 </div>
             </div>
-
             <FooterNav />
         </div>
     );

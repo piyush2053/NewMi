@@ -84,6 +84,36 @@ const Home = () => {
   }, []);
 
   // ---------------------------------------------------------
+// Sort Events by Distance (Nearest First)
+// ---------------------------------------------------------
+useEffect(() => {
+  if (!userCoords || events.length === 0) return;
+
+  const sorted = [...events].sort((a, b) => {
+    const [latA, lonA] = (a.Location || "").split(",").map(Number);
+    const [latB, lonB] = (b.Location || "").split(",").map(Number);
+
+    const validA = !isNaN(latA) && !isNaN(lonA);
+    const validB = !isNaN(latB) && !isNaN(lonB);
+
+    if (!validA && !validB) return 0;
+    if (!validA) return 1;
+    if (!validB) return -1;
+
+    const distA = parseFloat(
+      calculateDistance(userCoords.lat, userCoords.lon, latA, lonA)
+    );
+    const distB = parseFloat(
+      calculateDistance(userCoords.lat, userCoords.lon, latB, lonB)
+    );
+
+    return distA - distB;
+  });
+
+  setEvents(sorted);
+}, [userCoords, events.length]);
+
+  // ---------------------------------------------------------
   // Calculate Distance — Haversine Formula
   // ---------------------------------------------------------
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
@@ -152,17 +182,35 @@ const Home = () => {
 
                   <div className="absolute bottom-0 left-0 w-full bg-black/40 backdrop-blur-sm text-white p-3">
                     <p className="font-bold text-sm">{event.EventTitle}</p>
-                    <p className="text-xs">{event.EventDesc}</p>
+                    {/* <p className="text-xs">{event.EventDesc}</p> */}
+                    <p className="text-[13px] mt-1">
+                      {(() => {
+                        const eventDate = new Date(event.EventTime);
+                        const now = new Date();
 
-                    <p className="text-[10px] mt-1">{new Date(event.EventTime).toLocaleString()}</p>
+                        const diffMs = eventDate.getTime() - now.getTime();
+                        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-                    {/* -------------------- DISTANCE FROM USER -------------------- */}
-                    <p className="text-[10px] text-gray-300">
+                        if (diffDays >= 1 && diffDays <= 6) {
+                          return `in ${diffDays} day${diffDays > 1 ? "s" : ""}`;
+                        }
+
+                        // 7+ days → show date + time
+                        return eventDate.toLocaleString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        });
+                      })()}
+                    </p>
+
+                    <p className="text-[17px] font-semibold text-white mt-1">
                       {(() => {
                         if (!userCoords) return "Calculating distance...";
 
                         const [lat, lon] = (event.Location || "").split(",").map(Number);
-                        if (!lat || !lon) return "Location unavailable";
+                        if (!lat || !lon) return "N/A";
 
                         const dist = calculateDistance(userCoords.lat, userCoords.lon, lat, lon);
                         return `${dist} km away`;

@@ -1,7 +1,7 @@
 import FooterNav from "../components/FooterNav"
 
 const MessageWindowSkeleton = () => {
-    return (<div className="h-[90vh] bg-bg1 text-white flex flex-col animate-pulse p-4 space-y-4">
+    return (<div className="min-h-screen bg-bg1 text-white flex flex-col animate-pulse p-4 space-y-4">
 
         {/* Header Loader */}
         <div className="flex items-center gap-4">
@@ -25,7 +25,7 @@ const MessageWindowSkeleton = () => {
                 <div key={i} className="w-[70%] h-10 bg-bg4 rounded-full"></div>
             ))}
         </div>
-        <div className="w-full h-12 bg-bg4 rounded-full"></div>
+        <div className="w-full h-12 sticky bottom-[100px] z-40 bg-bg4 rounded-full"></div>
         <FooterNav />
     </div>)
 }

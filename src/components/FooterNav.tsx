@@ -32,8 +32,9 @@ const FooterNav = () => {
             >
               {item.customIcon ? (
                 <div className="relative flex items-center justify-center">
-                  <div className="absolute h-14 w-14 rounded-full bg-white/20 animate-pulse"></div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-bg2 text-white z-10">
+                  <div className="absolute h-16 w-16 rounded-full bg-white/20 animate-pulse"></div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-green-700 
+                        shadow-green-500/40 text-bg1 z-10">
                     <HiPlus size={20} />
                   </div>
                 </div>

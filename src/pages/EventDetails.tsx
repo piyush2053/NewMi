@@ -124,7 +124,7 @@ const EventDetails = () => {
     );
 
   return (
-    <div className="min-h-screen flex flex-col bg-bg1 text-white font-display">
+    <div className=" flex flex-col bg-bg1 text-white font-display">
       <Helmet>
         <title>{event.title} - NearMi</title>
       </Helmet>
