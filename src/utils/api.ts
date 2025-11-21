@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getToken, setToken } from "./function";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5010";
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://nearmi-ccd3caa6gcetcaa5.centralindia-01.azurewebsites.net";
 
 export const core_services = {
   // Login API
