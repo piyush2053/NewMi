@@ -27,7 +27,7 @@ const Profile = () => {
   if (isUserLoading) {
     return (
       <div className="min-h-screen bg-bg1 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4CAF50]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#29C9FF]"></div>
       </div>
     );
   }
@@ -53,9 +53,9 @@ const Profile = () => {
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="w-24 h-24 rounded-full object-cover border-4 border-[#4CAF50]"
+                className="w-24 h-24 rounded-full object-cover border-4 border-[#29C9FF]"
               />
-              <button className="absolute bottom-0 right-0 bg-[#4CAF50] p-2 rounded-full shadow-lg hover:bg-[#45a049] transition">
+              <button className="absolute bottom-0 right-0 bg-[#29C9FF] p-2 rounded-full shadow-lg hover:bg-[#45a049] transition">
                 <Camera size={16} className="text-black" />
               </button>
             </div>
@@ -78,23 +78,23 @@ const Profile = () => {
             {/* Stats */}
             <div className="flex items-center gap-8 mt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-[#4CAF50]">{user.events_hosted}</div>
+                <div className="text-2xl font-bold text-[#29C9FF]">{user.events_hosted}</div>
                 <div className="text-xs text-gray-400 mt-1">Event Hosted</div>
               </div>
               <div className="w-px h-12 bg-gray-700"></div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-[#4CAF50]">{user.followers}</div>
+                <div className="text-2xl font-bold text-[#29C9FF]">{user.followers}</div>
                 <div className="text-xs text-gray-400 mt-1">Followers</div>
               </div>
               <div className="w-px h-12 bg-gray-700"></div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-[#4CAF50]">{user.events}</div>
+                <div className="text-2xl font-bold text-[#29C9FF]">{user.events}</div>
                 <div className="text-xs text-gray-400 mt-1">Events Joined</div>
               </div>
             </div>
 
             {/* Edit Profile Button */}
-            <button className="mt-6 w-full bg-[#4CAF50] text-black font-semibold py-3 rounded-full hover:bg-[#45a049] transition">
+            <button className="mt-6 w-full bg-[#29C9FF] text-black font-semibold py-3 rounded-full hover:bg-[#45a049] transition">
               Edit Profile
             </button>
           </div>
@@ -105,18 +105,18 @@ const Profile = () => {
       <div className="px-4 mt-6 grid grid-cols-2 gap-4">
         {/* Past Trips Card */}
         <div className="bg-bg4 rounded-xl p-4 relative overflow-hidden">
-          <div className="absolute top-2 right-2 bg-[#4CAF50] text-black text-xs font-bold px-2 py-1 rounded-full">
+          <div className="absolute top-2 right-2 bg-[#29C9FF] text-black text-xs font-bold px-2 py-1 rounded-full">
             {user.pastTrips}
           </div>
           <div className="flex flex-col items-center justify-center h-full pt-2">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#4CAF50] to-[#2E7D32] rounded-2xl flex items-center justify-center mb-3">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#29C9FF] to-[#2E7D32] rounded-2xl flex items-center justify-center mb-3">
               <Trophy size={28} className="text-white" />
             </div>
             <p className="text-sm font-semibold text-center">Past Events</p>
           </div>
         </div>
         <div className="bg-bg4 rounded-xl p-4 relative overflow-hidden">
-          <div className="absolute top-2 right-2 bg-[#4CAF50] text-black text-xs font-bold px-2 py-1 rounded-full">
+          <div className="absolute top-2 right-2 bg-[#29C9FF] text-black text-xs font-bold px-2 py-1 rounded-full">
             {user.connections}
           </div>
           <div className="flex flex-col items-center justify-center h-full pt-2">
@@ -134,8 +134,8 @@ const Profile = () => {
         <div className="space-y-2">
           <button className="w-full bg-bg4 p-4 rounded-xl flex items-center justify-between hover:bg-opacity-80 transition">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#4CAF50] bg-opacity-20 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-[#4CAF50]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-10 h-10 bg-[#29C9FF] bg-opacity-20 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-[#29C9FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>

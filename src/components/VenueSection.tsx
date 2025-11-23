@@ -17,12 +17,13 @@ const VenueSection = ({ hostedVenues, navigate }) => {
         <section className="p-3 bg-bg4 rounded-lg">
             <h2 className="text-lg font-bold mb-4">
                 Have a space for hosting events?{" "}
-                <span className="text-green-400">List it & earn money!</span>
+                <span className="text-[#29C9FF]">List it & earn money!</span>
             </h2>
 
             <div className="flex gap-4 mb-4 overflow-x-auto scrollbar-hide"  >
                 <div
-                    className="w-28 h-28 rounded-lg flex items-center justify-center cursor-pointer transform hover:scale-105 transition-transform duration-300 relative overflow-hidden bg-gradient-to-t from-yellow-400/50 to-yellow-600/50 flex-shrink-0"
+                    className="w-28 h-28 rounded-lg flex items-center justify-center cursor-pointer transform hover:scale-105 transition-transform duration-300 relative overflow-hidden bg-gradient-to-t from-[#0c2050] to-[#29C9FF] shadow-[#29C9FF]/40
+ flex-shrink-0"
                     onClick={() => navigate("/add_venue")}
                 >
                     <FiPlus size={32} color="white" />

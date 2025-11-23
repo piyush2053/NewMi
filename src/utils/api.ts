@@ -2,6 +2,7 @@ import axios from "axios";
 import { getToken, setToken } from "./function";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || "http://nearmi-ccd3caa6gcetcaa5.centralindia-01.azurewebsites.net";
+// const API_BASE_URL = 'http://nearmi-ccd3caa6gcetcaa5.centralindia-01.azurewebsites.net'
 
 export const core_services = {
   // Login API
@@ -296,5 +297,21 @@ export const core_services = {
       throw error.response?.data || error.message;
     }
   },
-
+getAlleventsJoinedbyUser: async (userId: string) => {
+    try {
+      const token = getToken();
+      const response = await axios.get(
+        `${API_BASE_URL}/event-attender/user/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
 };

@@ -158,8 +158,8 @@ const EventChat = () => {
                             <div
                                 className={`p-2 px-4 rounded-full max-w-[70%] 
                                     ${msg.senderType === "admin"
-                                        ? "bg-[#4CAF50] text-black ml-auto"
-                                        : "bg-[#2C2C2C] text-white mr-auto"
+                                        ? "bg-bg6 text-black ml-auto"
+                                        : "bg-bg4 text-white mr-auto"
                                     }`}
                             >
                                 {msg.text}
@@ -187,8 +187,8 @@ const EventChat = () => {
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
                                     placeholder="Type a message..."
-                                    className="w-full p-3 pr-12 rounded-full bg-[#2C2C2C] text-white
-                        focus:outline-none ring-1 ring-[#4CAF50]"
+                                    className="w-full p-3 pr-12 rounded-full bg-bg1 text-white
+                        focus:outline-none ring-1 ring-bg6"
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") handleSend();
                                     }}
@@ -197,8 +197,8 @@ const EventChat = () => {
                                 <button
                                     onClick={handleSend}
                                     className="absolute right-2 top-1/2 -translate-y-1/2 
-                        p-2 rounded-full bg-gradient-to-r from-green-500 to-green-700 
-                        shadow-green-500/40 text-white"
+                        p-2 rounded-full  bg-gradient-to-t from-[#0c2050] to-[#29C9FF] shadow-[#29C9FF]/40
+ text-white"
                                 >
                                     <FiSend size={18} />
                                 </button>

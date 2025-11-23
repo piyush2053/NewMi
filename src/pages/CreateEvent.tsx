@@ -129,7 +129,7 @@ const CreateEvent = () => {
               <span
                 key={title}
                 onClick={() => setEventTitle(title)}
-                className="cursor-pointer bg-[#4CAF50] text-black px-3 py-1 rounded-full text-sm"
+                className="cursor-pointer bg-bg6 text-black px-3 py-1 rounded-full text-sm"
               >
                 {title}
               </span>

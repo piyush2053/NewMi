@@ -7,11 +7,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        bg1: "#122017",
-        bg2: "#38E07B",
+        bg1: "#081638",
+        bg2: "#fff",
         bg3: "#282c34",
-        bg4: "#273e2fff",
+        bg4: "#0c2050",
         bg5: "#38e07bba",
+        bg6: "#29C9FF",
         pBlue: "#1475e1",
         points: "#FED348"
       },

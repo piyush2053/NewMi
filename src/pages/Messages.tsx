@@ -11,20 +11,36 @@ const MessagesList = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      setLoading(true);
-      try {
-        const res = await core_services.getAllEvents();
-        setEvents(res || []);
-      } catch (err) {
-        console.error("Error fetching events:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEvents();
-  }, []);
+ useEffect(() => {
+  const fetchJoinedEvents = async () => {
+    setLoading(true);
+    try {
+      if (!user?.userId) return;
+
+      // Step 1: fetch joined event IDs
+      const joined = await core_services.getAlleventsJoinedbyUser(user.userId);
+
+      // joined = [{ EventId: "...", ... }, ...]
+
+      // Step 2: fetch event details for each joined event
+      const eventPromises = joined.map((attend: any) =>
+        core_services.getEventById(attend.EventId)
+      );
+
+      const eventDetails = await Promise.all(eventPromises);
+
+      // Step 3: set final events data
+      setEvents(eventDetails);
+    } catch (err) {
+      console.error("Error loading joined events:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchJoinedEvents();
+}, [user]);
+
 
   return (
     <div className="min-h-screen bg-bg1 text-white flex flex-col font-sans">
@@ -46,7 +62,7 @@ const MessagesList = () => {
                 className="flex items-center gap-3 p-3 bg-bg4 rounded-lg cursor-pointer hover:bg-[#3A3A3A] transition"
                 onClick={() => navigate(`/messages/${event.EventID}`)}
               >
-                <div className="w-12 h-12 rounded-full bg-bg5 flex items-center justify-center text-bg1 font-bold">
+                <div className="w-12 h-12 rounded-full bg-bg6 flex items-center justify-center text-bg1 font-bold">
                   {event.EventTitle?.charAt(0) || "E"}
                 </div>
 
@@ -58,7 +74,7 @@ const MessagesList = () => {
 
                 {/* ADMIN badge */}
                 {isAdmin && (
-                  <span className="text-green-400 text-[10px] font-semibold border border-green-400 px-2 py-0.5 rounded">
+                  <span className="text-bg6 text-[10px] font-semibold border border-bg6 px-2 py-0.5 rounded">
                     ADMIN
                   </span>
                 )}
