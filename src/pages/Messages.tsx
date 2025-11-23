@@ -11,34 +11,46 @@ const MessagesList = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
- useEffect(() => {
-  const fetchJoinedEvents = async () => {
+useEffect(() => {
+  const loadEvents = async () => {
     setLoading(true);
     try {
       if (!user?.userId) return;
 
-      // Step 1: fetch joined event IDs
+      // 1️⃣ Fetch events user joined
       const joined = await core_services.getAlleventsJoinedbyUser(user.userId);
 
-      // joined = [{ EventId: "...", ... }, ...]
+      const joinedEventIds = joined.map((e: any) => e.EventId);
 
-      // Step 2: fetch event details for each joined event
-      const eventPromises = joined.map((attend: any) =>
-        core_services.getEventById(attend.EventId)
+      const joinedEventsPromises = joinedEventIds.map((eventId: string) =>
+        core_services.getEventById(eventId)
       );
 
-      const eventDetails = await Promise.all(eventPromises);
+      const joinedEvents = await Promise.all(joinedEventsPromises);
 
-      // Step 3: set final events data
-      setEvents(eventDetails);
+      // 2️⃣ Fetch events user CREATED (your existing API)
+      const allEvents = await core_services.getAllEvents();
+      const createdEvents = allEvents.filter(
+        (event: any) => event.UserId === user.userId
+      );
+
+      // 3️⃣ Combine BOTH (avoid duplicates)
+      const finalEvents = [
+        ...joinedEvents,
+        ...createdEvents.filter(
+          (e: any) => !joinedEventIds.includes(e.EventID)
+        ),
+      ];
+
+      setEvents(finalEvents);
     } catch (err) {
-      console.error("Error loading joined events:", err);
+      console.error("Error loading events:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  fetchJoinedEvents();
+  loadEvents();
 }, [user]);
 
 
