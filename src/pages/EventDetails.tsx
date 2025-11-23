@@ -43,10 +43,8 @@ const EventDetails = () => {
       // Fetch attendees
       const people = await core_services.getEventAttendees(eventId);
       setAttendees(people);
-      const joined = people.some(
-        async (p: any) => p.UserId === await user?.userId
-      );
-
+    
+      const joined = people.some(p => p.UserId === user?.userId);
       setAlreadyJoined(joined);
 
     } catch (err) {

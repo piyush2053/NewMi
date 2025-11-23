@@ -171,7 +171,7 @@ useEffect(() => {
               {events.map((event: any) => (
                 <div
                   key={event.EventID}
-                  onClick={() => navigate(`/event/${event.EventID}`)}
+                  onClick={() => navigate(`/event/${event?.EventID}`)}
                   className="h-[200px] w-[200px] rounded-lg overflow-hidden flex-shrink-0 cursor-pointer transform transition-transform duration-200 hover:scale-110 relative"
                 >
                   <img

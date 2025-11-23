@@ -314,4 +314,21 @@ getAlleventsJoinedbyUser: async (userId: string) => {
       throw error.response?.data || error.message;
     }
   },
+  getParticipants: async (eventId: string) => {
+  try {
+    const token = getToken();
+    const response = await axios.get(
+      `${API_BASE_URL}/event-attender/${eventId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw error.response?.data || error.message;
+  }
+},
 };
