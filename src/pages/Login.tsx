@@ -85,7 +85,9 @@ const Login = () => {
           <Loader />
         </div>
       )}
-      <img src={logo} alt="logo" className="h-[100px] my-3" />
+      <span className="text-[40px] font-bold mb-5 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                            NearMi
+                        </span>
       <div className="w-full max-w-xs">
         <Input
           size="large"

@@ -39,45 +39,44 @@ code {
     transform: translateX(0%);
   }
 }
-
 .text-write {
-  font-size: 64px;
-  font-weight: 700;
+  font-size: inherit;
+  font-weight: inherit;
   color: white;
-  width: fit-content;
-  overflow: hidden;
+  max-width: 0;                 /* FIX: prevents shifting */
+  display: inline-block;        /* keeps cursor at correct place */
   white-space: nowrap;
-  position: relative;
+  overflow: hidden;
   animation: typing 3s steps(20) forwards;
 }
 
-/* Cursor line (visible only during typing) */
+/* Cursor line */
 .text-write::after {
   content: "";
   position: absolute;
   right: 0;
   top: 0;
   height: 100%;
-  border-right: 4px solid #29C9FF;
+  border-right: 3px solid #29C9FF;
   animation: caretBlink 0.6s step-end infinite;
 }
 
-/* Remove cursor after 7 sec and show blinking '.' */
+/* Blinking dot after typing */
 .text-write.doneTyping::after {
   content: ".";
   border-right: none;
-  font-size: 60px;
-  animation: dotBlink 1s infinite;
-  top: -8px;
+  font-size: inherit;
+  top: -3px;
   color: #29C9FF;
+  animation: dotBlink 1s infinite;
 }
 
 @keyframes typing {
   from {
-    width: 0;
+    max-width: 0;
   }
   to {
-    width: 100%;
+    max-width: 200px; /* enough to hold "NearMi" */
   }
 }
 
