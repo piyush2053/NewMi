@@ -74,13 +74,11 @@ const Navbar = () => {
 
   return (
     <Layout.Header className="flex justify-between items-center border-b border-gray-700 bg-bg1 text-white px-4 shadow-gray-800 shadow-sm animate-fade">
-
-      {/* 🔹 CITY POPOVER */}
       <Popover
         content={popoverContent}
         trigger="click"
         overlayInnerStyle={{
-          backgroundColor: "#273e2fff",
+          backgroundColor: "#020f2cf3",
           color: "white",
           padding: "10px",
           marginLeft: "10px",
@@ -99,7 +97,7 @@ const Navbar = () => {
 
       {isAuthenticated && (
         <button
-          className="bg-bg4 p-2 rounded-full border-none text-bg5 flex items-center gap-1 hover:text-bg1 hover:bg-bg2"
+          className="bg-bg4 p-2 rounded-full border-none text-bg6 flex items-center gap-1 hover:text-bg1 hover:bg-bg2"
           onClick={() => {
             logout();
             navigate("/login");
