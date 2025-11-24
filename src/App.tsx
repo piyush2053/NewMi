@@ -20,6 +20,7 @@ import AddVenue from "./pages/AddVenue";
 import ManageVenue from "./pages/ManageVenue";
 import EventDetails from "./pages/EventDetails";
 import NearMiLandingPage from "./pages/LandingPage";
+import AboutUs from "./pages/AboutUs";
 
 const App = () => {
   return (
@@ -30,7 +31,8 @@ const App = () => {
             <Layout className="min-h-screen bg-bg1">
               <Layout.Content>
                 <Routes>
-                  <Route path="/Nearmi" element={<NearMiLandingPage />} />
+                  <Route path="/nearmi" element={<NearMiLandingPage />} />
+                  <Route path="/nearmi/aboutus" element={<AboutUs />} />
                   <Route path="/login" element={<Login />} />
                   <Route
                     path="/"
