@@ -37,7 +37,7 @@ const EventDetails = () => {
           minute: "2-digit",
         }),
         img:
-          "https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf?auto=format&fit=crop&w=400&q=80",
+          "https://canapii.com/wp-content/uploads/2023/03/Blog-banner-5-C-of-event-management.png",
       });
 
       // Fetch attendees

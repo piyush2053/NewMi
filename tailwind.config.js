@@ -13,6 +13,7 @@ module.exports = {
         bg4: "#0c2050",
         bg5: "#38e07bba",
         bg6: "#29C9FF",
+        bg7: "#020f2cff",
         pBlue: "#1475e1",
         points: "#FED348"
       },

@@ -297,7 +297,7 @@ export const core_services = {
       throw error.response?.data || error.message;
     }
   },
-getAlleventsJoinedbyUser: async (userId: string) => {
+  getAlleventsJoinedbyUser: async (userId: string) => {
     try {
       const token = getToken();
       const response = await axios.get(
@@ -315,20 +315,39 @@ getAlleventsJoinedbyUser: async (userId: string) => {
     }
   },
   getParticipants: async (eventId: string) => {
-  try {
-    const token = getToken();
-    const response = await axios.get(
-      `${API_BASE_URL}/event-attender/${eventId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-      }
-    );
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
-},
+    try {
+      const token = getToken();
+      const response = await axios.get(
+        `${API_BASE_URL}/event-attender/${eventId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+  deleteEvent: async (eventId: string) => {
+    try {
+      const token = getToken();
+
+      const response = await axios.delete(
+        `${API_BASE_URL}/events/${eventId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
 };
