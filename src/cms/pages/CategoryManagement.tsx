@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Card, List, Button, Modal, Form, Input, Popconfirm, message } from "antd";
+import {
+  Card,
+  List,
+  Button,
+  Modal,
+  Form,
+  Input,
+  Popconfirm,
+  message,
+} from "antd";
 import { core_services } from "../../utils/api";
 
 interface Category {
-  id: string;
-  categoryName: string;
-  categoryDesc: string;
+  CategoryId: number;
+  CategoryName: string;
+  CategoryDesc: string;
 }
 
 const CategoryManagement: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [form] = Form.useForm();
 
   const fetchCategories = async () => {
@@ -19,7 +29,7 @@ const CategoryManagement: React.FC = () => {
     try {
       const res = await core_services.getCategories();
       setCategories(res);
-    } catch (err) {
+    } catch {
       message.error("Failed to load categories");
     } finally {
       setLoading(false);
@@ -30,74 +40,119 @@ const CategoryManagement: React.FC = () => {
     fetchCategories();
   }, []);
 
-  const handleCreate = async () => {
+  // CREATE or UPDATE
+  const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      await core_services.createCategory(values);
-      message.success("Category created");
+
+      if (editingCategory) {
+        // UPDATE
+        await core_services.updateCategory(
+          String(editingCategory.CategoryId),
+          {
+            categoryName: values.CategoryName,
+            categoryDesc: values.CategoryDesc,
+          }
+        );
+        message.success("Category updated");
+      } else {
+        // CREATE
+        await core_services.createCategory({
+          categoryName: values.CategoryName,
+          categoryDesc: values.CategoryDesc,
+        });
+        message.success("Category created");
+      }
+
       setOpen(false);
+      setEditingCategory(null);
       form.resetFields();
       fetchCategories();
-    } catch (err) {
-      message.error("Failed to create category");
+    } catch {
+      message.error("Operation failed");
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleEdit = (category: Category) => {
+    setEditingCategory(category);
+    setOpen(true);
+    form.setFieldsValue({
+      CategoryName: category.CategoryName,
+      CategoryDesc: category.CategoryDesc,
+    });
+  };
+
+  const handleDelete = async (categoryId: number) => {
     try {
-      await core_services.deleteCategory(id);
+      await core_services.deleteCategory(String(categoryId));
       message.success("Category deleted");
       fetchCategories();
-    } catch (err) {
+    } catch {
       message.error("Delete failed");
     }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setEditingCategory(null);
+    form.resetFields();
   };
 
   return (
     <Card
       title="Category Management"
-      extra={<Button type="primary" onClick={() => setOpen(true)}>Add Category</Button>}
+      extra={
+        <Button type="primary" onClick={() => setOpen(true)}>
+          Add Category
+        </Button>
+      }
     >
       <List
         loading={loading}
         bordered
         dataSource={categories}
+        rowKey="CategoryId"
         renderItem={(item) => (
           <List.Item
             actions={[
+              <Button color="orange" size="small" onClick={() => handleEdit(item)} >
+                Edit
+              </Button>,
               <Popconfirm
                 title="Delete this category?"
-                onConfirm={() => handleDelete(item.id)}
+                onConfirm={() => handleDelete(item.CategoryId)}
               >
                 <Button danger size="small">Delete</Button>
               </Popconfirm>,
             ]}
           >
             <List.Item.Meta
-              title={item.categoryName}
-              description={item.categoryDesc}
+              title={item.CategoryName}
+              description={item.CategoryDesc}
             />
           </List.Item>
         )}
       />
 
       <Modal
-        title="Add Category"
+        title={editingCategory ? "Edit Category" : "Add Category"}
         open={open}
-        onCancel={() => setOpen(false)}
-        onOk={handleCreate}
+        onCancel={handleClose}
+        onOk={handleSubmit}
+        okText={editingCategory ? "Update" : "Create"}
       >
         <Form form={form} layout="vertical">
           <Form.Item
             label="Category Name"
-            name="categoryName"
-            rules={[{ required: true }]}
+            name="CategoryName"
+            rules={[{ required: true, message: "Please enter category name" }]}
           >
             <Input />
           </Form.Item>
+
           <Form.Item
             label="Category Description"
-            name="categoryDesc"
+            name="CategoryDesc"
           >
             <Input.TextArea rows={3} />
           </Form.Item>
