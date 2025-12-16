@@ -1,8 +1,24 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx"
+    "target": "ES2017",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "jsx": "react-jsx",
+
+    "strict": false,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    "forceConsistentCasingInFileNames": false,
+    "isolatedModules": false,
+    "noEmit": true,
+
+    "types": ["react", "react-dom", "node"]
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

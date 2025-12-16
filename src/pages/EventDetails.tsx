@@ -16,7 +16,7 @@ const EventDetails = () => {
   const navigate = useNavigate();
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [attendees, setAttendees] = useState([]);
+  const [attendees, setAttendees] = useState<any>([]);
   const [alreadyJoined, setAlreadyJoined] = useState(false);
 
   // ----------------------------------------------------------
@@ -69,7 +69,7 @@ const EventDetails = () => {
   const handleJoin = async () => {
     try {
       if (!user?.userId) {
-        showNotification("Login Required", "Please login first.", "error");
+        showNotification("Login Required", "Please login first.", "error", 3000);
         return;
       }
 
@@ -82,7 +82,7 @@ const EventDetails = () => {
       setAlreadyJoined(true);
 
       // Add user into attendees for instant UI accuracy
-      setAttendees((prev) => [
+      setAttendees((prev:any) => [
         ...prev,
         {
           EventID: eventId,
@@ -91,10 +91,10 @@ const EventDetails = () => {
         },
       ]);
 
-      showNotification("Joined", `You joined ${event?.title}!`, "success");
+      showNotification("Joined", `You joined ${event?.title}!`, "success", 3000);
     } catch (err) {
       console.error(err);
-      showNotification("Error", "Failed to join event.", "error");
+      showNotification("Error", "Failed to join event.", "error", 3000);
     }
   };
 

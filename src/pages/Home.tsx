@@ -7,6 +7,7 @@ import VenueSection from "../components/VenueSection";
 import { core_services } from "../utils/api";
 import Loader from "../components/Loader";
 import EventCardSkeleton from "../skeletons/EventsCardSkeleton";
+import { motion } from "framer-motion";
 
 const hostedVenues = [
   { id: 101, name: "Carlton Banquet Hall", desc: "Luxury indoor hall", img: "https://assets.simpleviewinc.com/sv-visit-irving/image/upload/c_limit,h_1200,q_75,w_1200/v1/cms_resources/clients/irving-redesign/Events_Page_Header_2903ed9c-40c1-4f6c-9a69-70bb8415295b.jpg" },
@@ -159,11 +160,28 @@ const Home = () => {
       )}
 
       <main className={`p-4 flex-1 space-y-8 ${!locationEnabled ? "blur-sm pointer-events-none" : ""}`}>
-
-        {/* -------------------- NEARBY EVENTS -------------------- */}
-        <section>
-          <h2 className="text-lg font-bold mb-4">Nearby Events</h2>
-          <div className="relative w-full mb-2">
+        <section className="flex flex-wrap">
+          <h2 className="text-lg font-bold my-auto">Nearby</h2>
+          <h2 className="ml-1">
+            <motion.span
+              className="text-[20px] font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent inline-block"
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              style={{
+                backgroundSize: "200% 200%",
+                display: "inline-block",
+              }}
+            >
+              VIBES
+            </motion.span>
+          </h2>
+          <div className="relative w-full my-2">
             <input
               type="text"
               value={searchText}

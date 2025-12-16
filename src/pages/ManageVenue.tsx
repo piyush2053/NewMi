@@ -16,7 +16,7 @@ const ManageVenue = () => {
 
     const [isAdding, setIsAdding] = useState(false);
     const [newSlot, setNewSlot] = useState({ start: "", end: "" });
-    const [editingSlot, setEditingSlot] = useState(null);
+    const [editingSlot, setEditingSlot] = useState<any>(null);
 
     // Add a new slot
     const handleAddSlot = () => {
@@ -31,7 +31,7 @@ const ManageVenue = () => {
     };
 
     // Edit existing slot
-    const handleEditSlot = (slot) => {
+    const handleEditSlot = (slot:any) => {
         setEditingSlot(slot);
         const [start, end] = slot.time.split(" - ");
         setNewSlot({ start, end });
@@ -48,7 +48,7 @@ const ManageVenue = () => {
     };
 
     // Delete slot
-    const handleDeleteSlot = (id) => {
+    const handleDeleteSlot = (id:any) => {
         if (window.confirm("Are you sure you want to delete this slot?")) {
             setSlots(slots.filter((s) => s.id !== id));
         }

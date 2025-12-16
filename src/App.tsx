@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Layout } from "antd";
 import { AuthProvider } from "./contexts/AuthContext";
 import Home from "./pages/Home";
@@ -21,6 +21,11 @@ import ManageVenue from "./pages/ManageVenue";
 import EventDetails from "./pages/EventDetails";
 import NearMiLandingPage from "./pages/LandingPage";
 import AboutUs from "./pages/AboutUs";
+import CmsHome from "./cms/cms_home";
+import UserManagement from "./cms/pages/UserManagement";
+import CategoryManagement from "./cms/pages/CategoryManagement";
+import EventManagement from "./cms/pages/EventManagement";
+import AppManagement from "./cms/pages/AppManagement";
 
 const App = () => {
   return (
@@ -31,19 +36,26 @@ const App = () => {
             <Layout className="min-h-screen bg-bg1">
               <Layout.Content>
                 <Routes>
-                  <Route path="/nearmi" element={<NearMiLandingPage />} />
-                  <Route path="/nearmi/aboutus" element={<AboutUs />} />
+                  <Route path="/cms" element={<CmsHome />}>
+                    <Route index element={<Navigate to="/cms/users" replace />} />
+                    <Route path="users" element={<UserManagement />} />
+                    <Route path="categories" element={<CategoryManagement />} />
+                    <Route path="events" element={<EventManagement />} />
+                    <Route path="app" element={<AppManagement />} />
+                  </Route>
+                  <Route path="/app_demo" element={<ProtectedRoute>
+                    <Navbar />
+                    <Home />
+                  </ProtectedRoute>} />
+                  <Route path="/aboutus" element={<AboutUs />} />
                   <Route path="/login" element={<Login />} />
                   <Route
                     path="/"
                     element={
-                      <ProtectedRoute>
-                        <Navbar />
-                        <Home />
-                      </ProtectedRoute>
+                      <NearMiLandingPage />
                     }
                   />
-                  <Route path="/event/:eventId" element={<ProtectedRoute>
+                  {/* <Route path="/event/:eventId" element={<ProtectedRoute>
                     <Navbar />
                     <EventDetails />
                   </ProtectedRoute>} />
@@ -78,8 +90,7 @@ const App = () => {
                     }
                   />
                   <Route path="/manage-venue/:venueId" element={<ManageVenue />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/admin " element={<AdminPanel />} />
+                  <Route path="/register" element={<Register />} /> */}
                 </Routes>
               </Layout.Content>
             </Layout>

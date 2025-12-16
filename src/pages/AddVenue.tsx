@@ -9,7 +9,7 @@ const AddVenue = () => {
     const [address, setAddress] = useState("");
     const [image, setImage] = useState(null);
     const [preview, setPreview] = useState(null);
-    const [location, setLocation] = useState(null);
+    const [location, setLocation] = useState<any>(null);
     const [loadingLocation, setLoadingLocation] = useState(false);
 
     // Handle drag/drop or select
