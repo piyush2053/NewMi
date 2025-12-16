@@ -202,3 +202,8 @@ code {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
+
+
+.ant-drawer-body{
+  background-color: #081638;
+}
