@@ -12,11 +12,14 @@ import {
   Popconfirm,
   Collapse,
   Typography,
+  Grid,
+  List,
 } from "antd";
 import dayjs from "dayjs";
 import { core_services } from "../../utils/api";
 
 const { Text } = Typography;
+const { useBreakpoint } = Grid;
 
 interface EventItem {
   id: string;
@@ -30,6 +33,8 @@ interface EventItem {
 }
 
 const EventManagement: React.FC = () => {
+  const screens = useBreakpoint();
+
   const [events, setEvents] = useState<EventItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -38,14 +43,11 @@ const EventManagement: React.FC = () => {
   const [form] = Form.useForm();
 
   // ================= Helpers =================
-  const isLatLng = (location: string) => {
-    return /^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(location);
-  };
+  const isLatLng = (location: string) =>
+    /^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(location);
 
   const renderLocation = (location: string) => {
-    if (!isLatLng(location)) {
-      return location;
-    }
+    if (!isLatLng(location)) return location;
 
     return (
       <div>
@@ -69,13 +71,13 @@ const EventManagement: React.FC = () => {
     );
   };
 
-  // ================= Fetch Events =================
+  // ================= Fetch =================
   const fetchEvents = async () => {
     setLoading(true);
     try {
       const res = await core_services.getAllEvents();
 
-      const mappedEvents: EventItem[] = res.map((item: any) => ({
+      const mapped: EventItem[] = res.map((item: any) => ({
         id: item.EventID,
         eventTitle: item.EventTitle,
         eventDesc: item.EventDesc,
@@ -86,7 +88,7 @@ const EventManagement: React.FC = () => {
         status: item.Status,
       }));
 
-      setEvents(mappedEvents);
+      setEvents(mapped);
     } catch {
       message.error("Failed to load events");
     } finally {
@@ -105,40 +107,42 @@ const EventManagement: React.FC = () => {
 
       if (editingEvent) {
         await core_services.updateEvent(editingEvent.id, values);
-        message.success("Event updated successfully");
+        message.success("Event updated");
       } else {
         await core_services.createEvent(values);
-        message.success("Event created successfully");
+        message.success("Event created");
       }
 
-      setOpen(false);
-      setEditingEvent(null);
-      form.resetFields();
+      handleClose();
       fetchEvents();
     } catch (err: any) {
       message.error(err?.message || "Something went wrong");
     }
   };
 
-  // ================= Edit =================
   const handleEdit = (record: EventItem) => {
     setEditingEvent(record);
     form.setFieldsValue(record);
     setOpen(true);
   };
 
-  // ================= Delete =================
   const handleDelete = async (eventId: string) => {
     try {
       await core_services.deleteEvent(eventId);
       message.success("Event deleted");
       fetchEvents();
     } catch {
-      message.error("Failed to delete event");
+      message.error("Delete failed");
     }
   };
 
-  // ================= Table Columns =================
+  const handleClose = () => {
+    setOpen(false);
+    setEditingEvent(null);
+    form.resetFields();
+  };
+
+  // ================= Table Columns (Desktop) =================
   const columns = [
     {
       title: "Event Title",
@@ -147,13 +151,12 @@ const EventManagement: React.FC = () => {
     {
       title: "Date & Time",
       dataIndex: "eventTime",
-      render: (value: string) =>
-        dayjs(value).format("DD MMM YYYY hh:mm A"),
+      render: (v: string) => dayjs(v).format("DD MMM YYYY hh:mm A"),
     },
     {
       title: "Location",
       dataIndex: "location",
-      render: (value: string) => renderLocation(value),
+      render: (v: string) => renderLocation(v),
     },
     {
       title: "Actions",
@@ -181,6 +184,7 @@ const EventManagement: React.FC = () => {
       extra={
         <Button
           type="primary"
+          block={!screens.md}
           onClick={() => {
             form.resetFields();
             setEditingEvent(null);
@@ -191,69 +195,87 @@ const EventManagement: React.FC = () => {
         </Button>
       }
     >
-      <Table
-        rowKey="id"
-        loading={loading}
-        dataSource={events}
-        columns={columns}
-      />
+      {/* ================= Desktop Table ================= */}
+      {screens.md && (
+        <Table
+          rowKey="id"
+          loading={loading}
+          dataSource={events}
+          columns={columns}
+        />
+      )}
 
+      {/* ================= Mobile Card List ================= */}
+      {!screens.md && (
+        <List
+          loading={loading}
+          dataSource={events}
+          renderItem={(item) => (
+            <Card
+              key={item.id}
+              style={{ marginBottom: 12 }}
+              title={item.eventTitle}
+            >
+              <p>
+                <Text strong>Date:</Text>{" "}
+                {dayjs(item.eventTime).format("DD MMM YYYY hh:mm A")}
+              </p>
+
+              <p>
+                <Text strong>Location:</Text> {renderLocation(item.location)}
+              </p>
+
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <Button block onClick={() => handleEdit(item)}>
+                  Edit
+                </Button>
+                <Popconfirm
+                  title="Delete this event?"
+                  onConfirm={() => handleDelete(item.id)}
+                >
+                  <Button block danger>
+                    Delete
+                  </Button>
+                </Popconfirm>
+              </Space>
+            </Card>
+          )}
+        />
+      )}
+
+      {/* ================= Modal ================= */}
       <Modal
         title={editingEvent ? "Edit Event" : "Create Event"}
         open={open}
         onOk={handleSubmit}
-        onCancel={() => {
-          setOpen(false);
-          setEditingEvent(null);
-        }}
+        onCancel={handleClose}
         okText={editingEvent ? "Update" : "Create"}
+        width={screens.md ? 600 : "100%"}
+        style={!screens.md ? { top: 0 } : undefined}
+        bodyStyle={!screens.md ? { minHeight: "75vh" } : undefined}
       >
         <Form layout="vertical" form={form}>
-          <Form.Item
-            label="Event Title"
-            name="eventTitle"
-            rules={[{ required: true }]}
-          >
+          <Form.Item label="Event Title" name="eventTitle" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label="Description"
-            name="eventDesc"
-            rules={[{ required: true }]}
-          >
+          <Form.Item label="Description" name="eventDesc" rules={[{ required: true }]}>
             <Input.TextArea rows={3} />
           </Form.Item>
 
-          <Form.Item
-            label="Location"
-            name="location"
-            rules={[{ required: true }]}
-          >
+          <Form.Item label="Location" name="location" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label="Event Time"
-            name="eventTime"
-            rules={[{ required: true }]}
-          >
+          <Form.Item label="Event Time" name="eventTime" rules={[{ required: true }]}>
             <Input placeholder="2025-08-12T20:09:00Z" />
           </Form.Item>
 
-          <Form.Item
-            label="Category ID"
-            name="categoryId"
-            rules={[{ required: true }]}
-          >
+          <Form.Item label="Category ID" name="categoryId" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label="User ID"
-            name="userId"
-            rules={[{ required: true }]}
-          >
+          <Form.Item label="User ID" name="userId" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
         </Form>

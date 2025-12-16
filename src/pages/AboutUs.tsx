@@ -39,7 +39,7 @@ export default function AboutUs() {
       <section className="max-w-5xl mx-auto text-center mb-16">
         <div className="inline-flex items-center gap-2 px-5 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full mb-6">
           <Users className="w-5 h-5 text-cyan-400" />
-          <span className="text-cyan-400 font-semibold text-sm">About NearMi</span>
+          <span className="text-cyan-400 font-semibold text-sm">About NearWe</span>
         </div>
 
         <h1 className="text-5xl lg:text-6xl font-extrabold mb-6 leading-tight">
@@ -49,7 +49,7 @@ export default function AboutUs() {
         </h1>
 
         <p className="text-gray-300 text-lg max-w-3xl mx-auto leading-relaxed">
-          NearMi was created with a vision to bring communities closer.  
+          NearWe was created with a vision to bring communities closer.  
           We help people discover events, meet like-minded friends, and build 
           real human connections in the digital era. Our mission is simple — 
           make the world feel smaller, warmer, and more connected.
@@ -89,7 +89,7 @@ export default function AboutUs() {
 
       {/* FOOTER */}
       <footer className="py-8 border-t border-cyan-500/10 text-center text-gray-500">
-        <p>© {new Date().getFullYear()} NearMi. Connecting people everywhere.</p>
+        <p>© {new Date().getFullYear()} NearWe. Connecting people everywhere.</p>
       </footer>
     </div>
   );

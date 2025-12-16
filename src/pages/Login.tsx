@@ -1,7 +1,6 @@
 import { Button, Input } from "antd";
 import { MailOutlined, LockOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import logo from '../assets/gifs/nearmi.gif';
 import { useAuth } from "../contexts/AuthContext";
 import Loader from "../components/Loader";
 import { useState } from "react";
@@ -27,11 +26,12 @@ const decodeJwt = (token: string) => {
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const { setUserFromToken } = useUser();
   const { showNotification } = useNotification();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setUserFromToken } = useUser();
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -39,24 +39,31 @@ const Login = () => {
       return;
     }
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const emailRegex =
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
-      showNotification("Error", "Please enter a valid email address (e.g., aaa@xyz.com).", "error", 3000);
+      showNotification(
+        "Error",
+        "Please enter a valid email address",
+        "error",
+        3000
+      );
       return;
     }
 
     setLoading(true);
     try {
       const data = await core_services.loginUser({ email, password });
-      const token: string | undefined = data?.token || data?.accessToken || "";
+      const token: string = data?.token || data?.accessToken || "";
       if (!token) throw new Error("No token returned from server");
 
       const payload = decodeJwt(token);
+
       const user = {
         id: payload?.userId || payload?.id || null,
         name: payload?.username || payload?.name || "",
         email: payload?.email || email,
-        role: payload?.role || "user",
+        role: payload?.role || "admin",
       };
 
       const expiresIn =
@@ -64,15 +71,15 @@ const Login = () => {
           ? payload.exp - payload.iat
           : data?.expiresIn || 0;
 
-      const resForAuth = { token, user, expiresIn };
-      login(resForAuth);
+      login({ token, user, expiresIn });
       setUserFromToken(token);
 
       showNotification("Success", "Logged in successfully", "success", 2000);
-      navigate("/");
+      navigate("/cms");
     } catch (err: any) {
-      const message = err?.response?.data?.message || err?.message || "Login failed";
-      showNotification("Error", message, "error", 3000);
+      const msg =
+        err?.response?.data?.message || err?.message || "Login failed";
+      showNotification("Error", msg, "error", 3000);
     } finally {
       setLoading(false);
     }
@@ -85,35 +92,31 @@ const Login = () => {
           <Loader />
         </div>
       )}
-      <span className="text-[40px] font-bold mb-5 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                            NearMi
-                        </span>
+
+      {/* CMS Heading */}
+      <h1 className="text-4xl font-bold mb-8 text-white tracking-wide">
+        CMS Login
+      </h1>
+
       <div className="w-full max-w-xs">
         <Input
           size="large"
           prefix={<MailOutlined />}
-          placeholder="Enter your email"
+          placeholder="Admin email"
           className="mb-4 rounded-full bg-bg3 text-gray-600 border-gray-700"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+
         <Input.Password
           size="large"
           prefix={<LockOutlined />}
-          placeholder="Enter your password"
+          placeholder="Password"
           className="mb-6 rounded-full bg-bg3 text-gray-600 border-gray-700"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <div className="flex justify-center mb-1 text-sm text-gray-400 hover:underline cursor-pointer">
-          Need help?
-        </div>
-        <div
-          className="flex justify-center mb-6 text-gray-400 hover:underline cursor-pointer"
-          onClick={() => navigate("/register")}
-        >
-          Don't have an account? Register
-        </div>
+
         <Button
           icon={<ArrowRightOutlined />}
           size="large"
@@ -121,10 +124,11 @@ const Login = () => {
           className="bg-bg2 min-w-full rounded-full border-none text-bg1"
           disabled={loading}
         >
-          Sign-In
+          Login
         </Button>
+
         <p className="text-xs text-gray-500 text-center mt-8">
-          © {CNAME} {new Date().getFullYear()} &nbsp;|&nbsp;.
+          © {CNAME} {new Date().getFullYear()}
         </p>
       </div>
     </div>

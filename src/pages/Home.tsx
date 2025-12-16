@@ -142,7 +142,7 @@ const Home = () => {
     <div className="min-h-screen flex flex-col font-display bg-bg1 text-white relative">
       <span style={{ display: "none" }}>Dhan Dhan Gurji</span>
       <Helmet>
-        <title>NearMi</title>
+        <title>NearWe</title>
       </Helmet>
 
       {!locationEnabled && (

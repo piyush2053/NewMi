@@ -64,7 +64,7 @@ const ManageVenue = () => {
     return (
         <div className="min-h-screen flex flex-col bg-bg1 text-white font-display">
             <Helmet>
-                <title>Manage Venue - NearMi</title>
+                <title>Manage Venue - NearWe</title>
             </Helmet>
 
             <main className="flex-1 p-5 space-y-6">

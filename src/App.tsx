@@ -18,7 +18,7 @@ import FooterNav from "./components/FooterNav";
 import AddVenue from "./pages/AddVenue";
 import ManageVenue from "./pages/ManageVenue";
 import EventDetails from "./pages/EventDetails";
-import NearMiLandingPage from "./pages/LandingPage";
+import NearWeLandingPage from "./pages/LandingPage";
 import AboutUs from "./pages/AboutUs";
 import CmsHome from "./cms/cms_home";
 import UserManagement from "./cms/pages/UserManagement";
@@ -35,7 +35,7 @@ const App = () => {
             <Layout className="min-h-screen bg-bg1">
               <Layout.Content>
                 <Routes>
-                  <Route path="/cms" element={<CmsHome />}>
+                  <Route path="/cms" element={<ProtectedRoute><CmsHome /></ProtectedRoute>}>
                     <Route index element={<Navigate to="/cms/users" replace />} />
                     <Route path="users" element={<UserManagement />} />
                     <Route path="categories" element={<CategoryManagement />} />
@@ -54,10 +54,10 @@ const App = () => {
                     } 
                   />
                   <Route path="/aboutus" element={<AboutUs />} />
-                  <Route path="/login" element={<Login />} />
+                  <Route path="/cms/login" element={<Login />} />
                   <Route
                     path="/"
-                    element={<NearMiLandingPage />}
+                    element={<NearWeLandingPage />}
                   />
                   {/* <Route 
                     path="/event/:eventId" 

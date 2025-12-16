@@ -14,7 +14,7 @@ import {
 import iosLogo from "../assets/logo/ios.png";
 import playstoreLogo from "../assets/logo/playstore.png";
 
-export default function NearMiLandingPage() {
+export default function NearWeLandingPage() {
     const [scrollY, setScrollY] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
     const heroRef = useRef(null);
@@ -35,7 +35,7 @@ export default function NearMiLandingPage() {
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                            NearMi
+                            NearWe
                         </span>
                     </div>
                     <button
@@ -164,7 +164,7 @@ export default function NearMiLandingPage() {
             <section className="py-24 px-6 bg-gradient-to-r from-[#0a0e1a] via-[#1a1f2e] to-[#0a0e1a]">
                 <div className="max-w-4xl mx-auto text-center">
                     <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
-                        Join NearMi Today
+                        Join NearWe Today
                     </h2>
                     <p className="text-xl text-gray-300 mb-12">
                         Start discovering your community and connecting with amazing people.
@@ -193,8 +193,8 @@ export default function NearMiLandingPage() {
 
             {/* FOOTER */}
             <footer className="py-8 px-6 bg-[#0a0e1a] border-t border-cyan-500/10 text-center text-gray-400">
-                <p>© {new Date().getFullYear()} NearMi. Connecting communities worldwide.</p>
-                <p className="mt-2 text-sm">hello@nearmi.app</p>
+                <p>© {new Date().getFullYear()} NearWe. Connecting communities worldwide.</p>
+                <p className="mt-2 text-sm">hello@NearWe.app</p>
             </footer>
         </div>
     );

@@ -6,7 +6,7 @@ import {
   ArrowRightOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/gifs/nearmi.gif";
+import logo from "../assets/gifs/NearWe.gif";
 import { useState } from "react";
 import Loader from "../components/Loader";
 import { CNAME } from "../utils/constants";
