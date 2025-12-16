@@ -10,7 +10,6 @@ import Register from "./pages/Register";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import '../src/utils/css/custom.css'
 import { UserProvider } from "./contexts/UserContext";
-import AdminPanel from "./pages/Adminpanel";
 import CreateEvent from "./pages/CreateEvent";
 import MyBookings from "./pages/Bookings";
 import MessagesList from "./pages/Messages";
@@ -43,31 +42,75 @@ const App = () => {
                     <Route path="events" element={<EventManagement />} />
                     <Route path="app" element={<AppManagement />} />
                   </Route>
-                  <Route path="/app_demo" element={<ProtectedRoute>
-                    <Navbar />
-                    <Home />
-                  </ProtectedRoute>} />
+                  <Route 
+                    path="/app_demo" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <Home />
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
                   <Route path="/aboutus" element={<AboutUs />} />
                   <Route path="/login" element={<Login />} />
                   <Route
                     path="/"
-                    element={
-                      <NearMiLandingPage />
-                    }
+                    element={<NearMiLandingPage />}
                   />
-                  {/* <Route path="/event/:eventId" element={<ProtectedRoute>
-                    <Navbar />
-                    <EventDetails />
-                  </ProtectedRoute>} />
-                  <Route path="/profile" element={<ProtectedRoute><Navbar /><Profile /></ProtectedRoute>} />
-                  <Route path="/create_event" element={<ProtectedRoute><Navbar /><CreateEvent /></ProtectedRoute>} />
-                  <Route path="/bookings" element={<ProtectedRoute><Navbar /><MyBookings /></ProtectedRoute>} />
+                  {/* <Route 
+                    path="/event/:eventId" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <EventDetails />
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/profile" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <Profile />
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/create_event" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <CreateEvent />
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/bookings" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <MyBookings />
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
                   <Route
                     path="/messages"
                     element={
                       <ProtectedRoute>
-                        <Navbar />
-                        <MessagesList />
+                        <>
+                          <Navbar />
+                          <MessagesList />
+                        </>
                       </ProtectedRoute>
                     }
                   />
@@ -75,8 +118,10 @@ const App = () => {
                     path="/messages/:eventId"
                     element={
                       <ProtectedRoute>
-                        <Navbar />
-                        <EventChat />
+                        <>
+                          <Navbar />
+                          <EventChat />
+                        </>
                       </ProtectedRoute>
                     }
                   />
@@ -84,8 +129,10 @@ const App = () => {
                     path="/add_venue"
                     element={
                       <ProtectedRoute>
-                        <Navbar />
-                        <AddVenue />
+                        <>
+                          <Navbar />
+                          <AddVenue />
+                        </>
                       </ProtectedRoute>
                     }
                   />

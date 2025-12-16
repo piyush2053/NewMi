@@ -2,14 +2,14 @@ import { useState } from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
-const VenueSection = ({ hostedVenues, navigate }) => {
+const VenueSection = ({ hostedVenues, navigate }:any) => {
     const [showMoreModal, setShowMoreModal] = useState(false);
     const [search, setSearch] = useState("");
     const maxVisible = 3;
     const visibleVenues = hostedVenues.slice(0, maxVisible);
     const remainingCount = hostedVenues.length - maxVisible;
 
-    const filteredVenues = hostedVenues.filter((v) =>
+    const filteredVenues = hostedVenues.filter((v:any) =>
         v.name.toLowerCase().includes(search.toLowerCase())
     );
 
@@ -26,9 +26,9 @@ const VenueSection = ({ hostedVenues, navigate }) => {
  flex-shrink-0"
                     onClick={() => navigate("/add_venue")}
                 >
-                    <FiPlus size={32} color="white" />
+                    {/* <FiPlus size={32} color="white" /> */}
                 </div>
-                {visibleVenues?.map((venue, index) => {
+                {visibleVenues?.map((venue:any, index:any) => {
                     if (index === maxVisible - 1 && remainingCount > 0) {
                         return (
                             <motion.div
@@ -82,7 +82,7 @@ const VenueSection = ({ hostedVenues, navigate }) => {
                                 onClick={() => setShowMoreModal(false)}
                                 className="absolute top-3 right-3 text-white text-lg scrollbar-hide"
                             >
-                                <FiX />
+                                {/* <FiX /> */}
                             </button>
 
                             <input
@@ -95,7 +95,7 @@ const VenueSection = ({ hostedVenues, navigate }) => {
 
                             <div className="max-h-80 overflow-y-auto scrollbar-hide">
                                 {filteredVenues.length > 0 ? (
-                                    filteredVenues.map((venue) => (
+                                    filteredVenues.map((venue:any) => (
                                         <div
                                             key={venue.id}
                                             className="flex items-center gap-3 mb-3 cursor-pointer hover:bg-white/10 rounded-lg p-2 transition"

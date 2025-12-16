@@ -1,6 +1,6 @@
 import { Tooltip, Progress } from "antd";
 
-const ProgressBar = ({ attendees, eventData }) => {
+const ProgressBar = ({ attendees, eventData }:any) => {
     const max = eventData?.MaxMembers || 5;
     const current = attendees?.length || 0;
 

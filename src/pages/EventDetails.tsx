@@ -44,7 +44,7 @@ const EventDetails = () => {
       const people = await core_services.getEventAttendees(eventId);
       setAttendees(people);
     
-      const joined = people.some(p => p.UserId === user?.userId);
+      const joined = people.some((p:any) => p.UserId === user?.userId);
       setAlreadyJoined(joined);
 
     } catch (err) {
@@ -132,7 +132,7 @@ const EventDetails = () => {
           <img src={event.img} alt={event.title} className="w-full h-full object-cover" />
           <div className="absolute top-0 left-0 p-4 bg-black/40 rounded-br-lg">
             <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-white">
-              <FiArrowLeft /> Back
+              {/* <FiArrowLeft /> Back */}
             </button>
           </div>
           <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4">

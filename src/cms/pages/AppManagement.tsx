@@ -6,7 +6,7 @@ import { Card, Form, Input, Switch, Button } from "antd";
 const AppManagement: React.FC = () => {
   return (
     <Card title="App Management">
-      <Form layout="vertical">
+      <Form layout="vertical"  >
         <Form.Item label="App Name">
           <Input placeholder="Nearwe" />
         </Form.Item>

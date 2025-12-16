@@ -37,7 +37,7 @@ const EventChat = () => {
         const loadAll = async () => {
             try {
                 const events = await core_services.getAllEvents();
-                const selectedEvent = events.find((ev) => ev.EventID === eventId);
+                const selectedEvent = events.find((ev:any) => ev.EventID === eventId);
                 setEventData(selectedEvent);
 
                 const msgRes = await core_services.getMessagesByEvent(eventId);
@@ -134,7 +134,7 @@ const EventChat = () => {
         <div className="min-h-screen bg-bg1 text-white flex flex-col font-sans scroll-hide">
             <header className="flex items-center p-4 bg-bg1 shadow-sm">
                 <div onClick={() => navigate("/messages")} className="cursor-pointer w-6 flex justify-start">
-                    <IoIosArrowBack size={24} />
+                    {/* <IoIosArrowBack size={24} /> */}
                 </div>
                 <div className="flex flex-row items-center justify-center gap-2 flex-1">
                     <h1 className="text-lg font-semibold">{eventData.EventTitle}</h1>
@@ -195,7 +195,7 @@ const EventChat = () => {
                                     onClick={handleSend}
                                     className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-gradient-to-t from-[#0c2050] to-[#29C9FF] shadow-[#29C9FF]/40 text-white"
                                 >
-                                    <FiSend size={18} />
+                                    {/* <FiSend size={18} /> */}
                                 </button>
                             </div>
                         </div>

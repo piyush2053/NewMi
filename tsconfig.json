@@ -5,20 +5,16 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "jsx": "react-jsx",
-
-    "strict": false,
+    "strict": true,
     "skipLibCheck": true,
-    "noImplicitAny": false,
-    "strictNullChecks": false,
-
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-
-    "forceConsistentCasingInFileNames": false,
-    "isolatedModules": false,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
     "noEmit": true,
 
     "types": ["react", "react-dom", "node"]
+
   },
   "include": ["src"]
 }

@@ -89,13 +89,13 @@ const Navbar = () => {
         }}
       >
         <div className="flex items-center text-sm font-medium gap-1 text-white cursor-pointer active:scale-95 transition">
-          <GoLocation />
+          {/* <GoLocation /> */}
           <span>{city}</span>
         </div>
       </Popover>
 
 
-      {isAuthenticated && (
+      {/* {isAuthenticated && (
         <button
           className="bg-bg4 p-2 rounded-full border-none text-bg6 flex items-center gap-1 hover:text-bg1 hover:bg-bg2"
           onClick={() => {
@@ -105,7 +105,7 @@ const Navbar = () => {
         >
           <BiLogOut />
         </button>
-      )}
+      )} */}
     </Layout.Header>
   );
 };

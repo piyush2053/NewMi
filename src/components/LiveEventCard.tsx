@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import Card from "antd/es/card/Card";
-const LiveEventCard = ({ match, setSelectedMatch, setShowBetPopup }) => {
+const LiveEventCard = ({ match, setSelectedMatch, setShowBetPopup }:any) => {
     return (
         <Card
             key={match.id}

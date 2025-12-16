@@ -37,7 +37,7 @@ export const useNotification = () => {
 };
 
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
-    const [notifications, setNotifications] = useState([]);
+    const [notifications, setNotifications] = useState<any>([]);
     const audioRef: any = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
@@ -45,7 +45,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
         audioRef.current.volume = 0.1;
     }, []);
     const removeNotification = useCallback((id: number) => {
-        setNotifications((prev) => prev.filter((n) => n.id !== id));
+        setNotifications((prev:any) => prev.filter((n:any) => n.id !== id));
     }, []);
 
     const showNotification = useCallback(
@@ -63,7 +63,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
                 type,
             };
 
-            setNotifications((prev) => [...prev, newNotification]);
+            setNotifications((prev:any) => [...prev, newNotification]);
             if (audioRef.current) {
                 audioRef.current.currentTime = 0;
                 audioRef.current.play();
@@ -79,9 +79,9 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
         <NotificationContext.Provider value={{ showNotification }}>
             {children}
             <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2 items-center w-full px-4">
-                {notifications?.map((notification) => (
+                {notifications?.map((notification:any) => (
                     <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2 items-center w-full px-4">
-                        {notifications?.map((notification) => (
+                        {notifications?.map((notification:any) => (
                             <div
                                 key={notification.id}
                                 className={`relative px-4 py-2 shadow-lg text-white w-full max-w-[260px] 

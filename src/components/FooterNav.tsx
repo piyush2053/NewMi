@@ -9,7 +9,7 @@ const FooterNav = () => {
   return (
     <footer className="sticky bottom-0 z-[99] ">
       <div className="flex gap-2 border-t border-black/10 px-4 pb-3 pt-2 bg-bg1">
-        {TABS.map((item) => {
+        {TABS.map((item:any) => {
           const isActive = location.pathname === item.path;
           return (
             <div
@@ -23,7 +23,7 @@ const FooterNav = () => {
                   <div className="absolute h-16 w-16 rounded-full bg-white/20 animate-pulse"></div>
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-t from-[#0c2050] to-[#29C9FF] shadow-[#29C9FF]/40
  text-bg1 z-10">
-                    <HiPlus size={20} />
+                    {/* <HiPlus size={20} /> */}
                   </div>
                 </div>
               ) : (

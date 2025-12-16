@@ -3,11 +3,11 @@ import Card from "antd/es/card/Card";
 import { useNotification } from "../contexts/NotificationContext";
 import { useState } from "react";
 
-const UpcomingEventCard = ({ match }) => {
+const UpcomingEventCard = ({ match }:any) => {
   const [loading, setLoading] = useState(false);
   const { showNotification } = useNotification();
 
-  const formatDateTime = (gmtString) => {
+  const formatDateTime = (gmtString:any) => {
     const date = new Date(gmtString);
     return date.toLocaleString("en-IN", {
       dateStyle: "medium",
@@ -25,13 +25,15 @@ const UpcomingEventCard = ({ match }) => {
         `Reminder set for ${match.teamA} vs ${match.teamB} on ${formatDateTime(
           match.dateTimeGMT
         )}`,
-        "success"
+        "success",
+        3000
       );
-    } catch (error) {
+    } catch (error:any) {
       showNotification(
         "Error",
         error?.message || "Failed to set reminder",
-        "error"
+        "error",
+        3000
       );
     } finally {
       setLoading(false);

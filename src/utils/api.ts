@@ -169,9 +169,9 @@ export const core_services = {
     }
   },
   createMessage: async (messageData: {
-    eventId: string;
-    userId: string;
-    messageText: string;
+    eventId: any;
+    userId: any;
+    messageText: any;
   }) => {
     try {
       const token = getToken();
@@ -219,7 +219,7 @@ export const core_services = {
   },
 
   // Get Messages By Event ID
-  getMessagesByEvent: async (eventId: string) => {
+  getMessagesByEvent: async (eventId: any) => {
     try {
       const token = getToken();
       const response = await axios.get(

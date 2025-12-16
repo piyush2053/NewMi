@@ -5,10 +5,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiPlus, FiEdit2, FiTrash2, FiCheck, FiX } from "react-icons/fi";
 import FooterNav from "../components/FooterNav";
 
+interface Slot {
+    id: number;
+    time: string;
+    booked: boolean;
+}
+
 const ManageVenue = () => {
     const { venueId } = useParams();
 
-    const [slots, setSlots] = useState([
+    const [slots, setSlots] = useState<Slot[]>([
         { id: 1, time: "08:00 AM - 10:00 AM", booked: false },
         { id: 2, time: "10:00 AM - 12:00 PM", booked: true },
         { id: 3, time: "12:00 PM - 02:00 PM", booked: false },
@@ -16,7 +22,7 @@ const ManageVenue = () => {
 
     const [isAdding, setIsAdding] = useState(false);
     const [newSlot, setNewSlot] = useState({ start: "", end: "" });
-    const [editingSlot, setEditingSlot] = useState<any>(null);
+    const [editingSlot, setEditingSlot] = useState<Slot | null>(null);
 
     // Add a new slot
     const handleAddSlot = () => {
@@ -31,13 +37,14 @@ const ManageVenue = () => {
     };
 
     // Edit existing slot
-    const handleEditSlot = (slot:any) => {
+    const handleEditSlot = (slot: Slot) => {
         setEditingSlot(slot);
         const [start, end] = slot.time.split(" - ");
         setNewSlot({ start, end });
     };
 
     const handleSaveEdit = () => {
+        if (!editingSlot) return;
         setSlots((prev) =>
             prev.map((s) =>
                 s.id === editingSlot.id ? { ...s, time: `${newSlot.start} - ${newSlot.end}` } : s
@@ -48,7 +55,7 @@ const ManageVenue = () => {
     };
 
     // Delete slot
-    const handleDeleteSlot = (id:any) => {
+    const handleDeleteSlot = (id: number) => {
         if (window.confirm("Are you sure you want to delete this slot?")) {
             setSlots(slots.filter((s) => s.id !== id));
         }
@@ -73,7 +80,7 @@ const ManageVenue = () => {
                         }}
                         className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-full font-semibold text-sm transition-transform hover:scale-105"
                     >
-                        <FiPlus /> Add Slot
+                        {/* <FiPlus size={16} /> Add Slot */}
                     </button>
                 </div>
 
@@ -108,13 +115,13 @@ const ManageVenue = () => {
                                             onClick={() => handleEditSlot(slot)}
                                             className="p-1 bg-yellow-500/70 hover:bg-yellow-600 rounded-full transition"
                                         >
-                                            <FiEdit2 size={14} />
+                                            {/* <FiEdit2 size={14} /> */}
                                         </button>
                                         <button
                                             onClick={() => handleDeleteSlot(slot.id)}
                                             className="p-1 bg-red-500/70 hover:bg-red-600 rounded-full transition"
                                         >
-                                            <FiTrash2 size={14} />
+                                            {/* <FiTrash2 size={14} /> */}
                                         </button>
                                     </div>
                                 )}
@@ -172,13 +179,13 @@ const ManageVenue = () => {
                                     }}
                                     className="flex items-center gap-1 text-gray-400 hover:text-gray-200"
                                 >
-                                    <FiX /> Cancel
+                                    {/* <FiX size={16} /> Cancel */}
                                 </button>
                                 <button
                                     onClick={editingSlot ? handleSaveEdit : handleAddSlot}
                                     className="flex items-center gap-1 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-full font-semibold text-sm"
                                 >
-                                    <FiCheck /> {editingSlot ? "Save" : "Add"}
+                                    {/* <FiCheck size={16} /> {editingSlot ? "Save" : "Add"} */}
                                 </button>
                             </div>
                         </motion.div>

@@ -105,7 +105,7 @@ const CreateEvent = () => {
   return (
     <div className="min-h-screen bg-bg1 text-white flex flex-col font-sans">
       <header className="flex items-center p-4 bg-bg1 shadow-sm">
-        <IoIosArrowBack size={24} />
+        {/* <IoIosArrowBack size={24} /> */}
         <h1 className="flex-1 text-center text-lg font-semibold">Create Event</h1>
         <div className="w-6"></div>
       </header>

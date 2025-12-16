@@ -12,20 +12,20 @@ const AddVenue = () => {
     const [location, setLocation] = useState<any>(null);
     const [loadingLocation, setLoadingLocation] = useState(false);
 
-    // Handle drag/drop or select
-    const handleImageUpload = (e) => {
-        const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
-        if (file) {
-            setImage(file);
-            setPreview(URL.createObjectURL(file));
-        }
-    };
+    // // Handle drag/drop or select
+    // const handleImageUpload = (e) => {
+    //     const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
+    //     if (file) {
+    //         setImage(file);
+    //         setPreview(URL.createObjectURL(file));
+    //     }
+    // };
 
-    const handleDragOver = (e) => e.preventDefault();
-    const handleDrop = (e) => {
-        e.preventDefault();
-        handleImageUpload(e);
-    };
+    // const handleDragOver = (e) => e.preventDefault();
+    // const handleDrop = (e) => {
+    //     e.preventDefault();
+    //     handleImageUpload(e);
+    // };
 
     // Get current location
     const getLocation = () => {
@@ -54,7 +54,7 @@ const AddVenue = () => {
         );
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e:any) => {
         e.preventDefault();
         if (!placeName || !description || !image || !address) {
             alert("Please fill all fields and upload an image.");
@@ -97,17 +97,17 @@ const AddVenue = () => {
                     {/* Description */}
                     <div>
                         <label className="block text-sm mb-2">Description</label>
-                        <textarea
+                        {/* <textarea
                             className="w-full p-3 rounded-lg bg-[#2C2C2C] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4CAF50] resize-none"
                             placeholder="e.g., This is a Turf (Cricket Box)"
                             rows="3"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                        />
+                        /> */}
                     </div>
 
                     {/* Image Upload */}
-                    <div
+                    {/* <div
                         onDragOver={handleDragOver}
                         onDrop={handleDrop}
                         className="border-2 border-dashed border-gray-500 rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer relative"
@@ -132,7 +132,7 @@ const AddVenue = () => {
                             className="hidden"
                             onChange={handleImageUpload}
                         />
-                    </div>
+                    </div> */}
 
                     {/* Location */}
                     <div>
@@ -145,7 +145,7 @@ const AddVenue = () => {
                                 value={address}
                                 onChange={(e) => setAddress(e.target.value)}
                             />
-                            <button
+                            {/* <button
                                 type="button"
                                 onClick={getLocation}
                                 className="px-3 rounded-lg bg-green-600 flex items-center justify-center"
@@ -153,9 +153,9 @@ const AddVenue = () => {
                                 {loadingLocation ? (
                                     <span className="animate-pulse">...</span>
                                 ) : (
-                                    <FiMapPin size={20} />
+                                    // <FiMapPin size={20} />
                                 )}
-                            </button>
+                            </button> */}
                         </div>
                         {location && (
                             <p className="text-xs mt-1 text-gray-400">
