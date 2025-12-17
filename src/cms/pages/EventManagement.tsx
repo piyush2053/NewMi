@@ -1,4 +1,3 @@
-// ================= pages/EventManagement.tsx =================
 import React, { useEffect, useState } from "react";
 import {
   Card,
@@ -14,6 +13,8 @@ import {
   Typography,
   Grid,
   List,
+  Progress,
+  Tag,
 } from "antd";
 import dayjs from "dayjs";
 import { core_services } from "../../utils/api";
@@ -71,6 +72,28 @@ const EventManagement: React.FC = () => {
     );
   };
 
+  // ================= Duration Logic =================
+  const getEventDuration = (eventTime: string) => {
+    const start = dayjs(eventTime);
+    const end = start.add(3, "day"); // hardcoded end date
+
+    const total = end.diff(start, "minute");
+    const passed = dayjs().diff(start, "minute");
+
+    const isEnded = dayjs().isAfter(end);
+
+    const progress = isEnded
+      ? 100
+      : Math.min(Math.max((passed / total) * 100, 0), 100);
+
+    return {
+      start,
+      end,
+      progress: Math.round(progress),
+      isEnded,
+    };
+  };
+
   // ================= Fetch =================
   const fetchEvents = async () => {
     setLoading(true);
@@ -100,7 +123,7 @@ const EventManagement: React.FC = () => {
     fetchEvents();
   }, []);
 
-  // ================= Create / Update =================
+  // ================= CRUD =================
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
@@ -142,16 +165,43 @@ const EventManagement: React.FC = () => {
     form.resetFields();
   };
 
-  // ================= Table Columns (Desktop) =================
+  // ================= Table Columns =================
   const columns = [
     {
       title: "Event Title",
       dataIndex: "eventTitle",
     },
     {
-      title: "Date & Time",
+      title: "Duration",
       dataIndex: "eventTime",
-      render: (v: string) => dayjs(v).format("DD MMM YYYY hh:mm A"),
+      width: 260,
+      render: (v: string) => {
+        const d = getEventDuration(v);
+
+        if (d.isEnded) {
+          return <Tag color="default">ENDED</Tag>;
+        }
+
+        return (
+          <div>
+            <Text style={{ fontSize: 12 }}>
+              <b>Start:</b> {d.start.format("DD MMM YYYY hh:mm A")}
+            </Text>
+            <br />
+            <Text style={{ fontSize: 12 }}>
+              <b>End:</b> {d.end.format("DD MMM YYYY hh:mm A")}
+            </Text>
+
+            <div style={{ marginTop: 4 }}>
+              <Progress
+                percent={d.progress}
+                size="small"
+                showInfo={false}
+              />
+            </div>
+          </div>
+        );
+      },
     },
     {
       title: "Location",
@@ -195,51 +245,79 @@ const EventManagement: React.FC = () => {
         </Button>
       }
     >
-      {/* ================= Desktop Table ================= */}
+      {/* ================= Desktop ================= */}
       {screens.md && (
         <Table
           rowKey="id"
           loading={loading}
           dataSource={events}
           columns={columns}
+          rowClassName={(record) =>
+            getEventDuration(record.eventTime).isEnded
+              ? "ended-row"
+              : ""
+          }
         />
       )}
 
-      {/* ================= Mobile Card List ================= */}
+      {/* ================= Mobile ================= */}
       {!screens.md && (
         <List
           loading={loading}
           dataSource={events}
-          renderItem={(item) => (
-            <Card
-              key={item.id}
-              style={{ marginBottom: 12 }}
-              title={item.eventTitle}
-            >
-              <p>
-                <Text strong>Date:</Text>{" "}
-                {dayjs(item.eventTime).format("DD MMM YYYY hh:mm A")}
-              </p>
+          renderItem={(item) => {
+            const d = getEventDuration(item.eventTime);
 
-              <p>
-                <Text strong>Location:</Text> {renderLocation(item.location)}
-              </p>
+            return (
+              <Card
+                key={item.id}
+                style={{
+                  marginBottom: 12,
+                  background: d.isEnded ? "#e5e7eb" : undefined, // gray-600-ish
+                }}
+                title={item.eventTitle}
+              >
+                {d.isEnded ? (
+                  <Tag color="default">ENDED</Tag>
+                ) : (
+                  <>
+                    <p>
+                      <Text strong>Start:</Text>{" "}
+                      {d.start.format("DD MMM YYYY hh:mm A")}
+                    </p>
+                    <p>
+                      <Text strong>End:</Text>{" "}
+                      {d.end.format("DD MMM YYYY hh:mm A")}
+                    </p>
+                    <Progress
+                      percent={d.progress}
+                      size="small"
+                      showInfo={false}
+                    />
+                  </>
+                )}
 
-              <Space direction="vertical" style={{ width: "100%" }}>
-                <Button block onClick={() => handleEdit(item)}>
-                  Edit
-                </Button>
-                <Popconfirm
-                  title="Delete this event?"
-                  onConfirm={() => handleDelete(item.id)}
-                >
-                  <Button block danger>
-                    Delete
+                <p style={{ marginTop: 8 }}>
+                  <Text strong>Location:</Text>{" "}
+                  {renderLocation(item.location)}
+                </p>
+
+                <Space direction="vertical" style={{ width: "100%" }}>
+                  <Button block disabled={d.isEnded} onClick={() => handleEdit(item)}>
+                    Edit
                   </Button>
-                </Popconfirm>
-              </Space>
-            </Card>
-          )}
+                  <Popconfirm
+                    title="Delete this event?"
+                    onConfirm={() => handleDelete(item.id)}
+                  >
+                    <Button block danger>
+                      Delete
+                    </Button>
+                  </Popconfirm>
+                </Space>
+              </Card>
+            );
+          }}
         />
       )}
 
@@ -280,6 +358,15 @@ const EventManagement: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
+
+      {/* ================= Row Style ================= */}
+      <style>
+        {`
+          .ended-row td {
+            background-color: #e5e7eb !important;
+          }
+        `}
+      </style>
     </Card>
   );
 };
