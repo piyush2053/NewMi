@@ -7,7 +7,8 @@ import {
   CalendarOutlined,
   SettingOutlined,
   MenuOutlined,
-  LogoutOutlined, // NEW
+  LogoutOutlined,
+  DashboardOutlined, // NEW
 } from "@ant-design/icons";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { removeToken } from "../utils/function";
@@ -16,6 +17,11 @@ const { Header, Sider, Content } = Layout;
 const { useBreakpoint } = Grid;
 
 const menuItems = [
+  {
+    key: "/cms/insights",
+    icon: <DashboardOutlined />,
+    label: "Insights",
+  },
   {
     key: "/cms/users",
     icon: <UserOutlined />,
@@ -42,12 +48,10 @@ const CmsHome: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const screens = useBreakpoint();
-
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const selectedKey = location.pathname;
 
-  // NEW
   const handleLogout = () => {
     removeToken();
     navigate("/cms/login", { replace: true });
@@ -68,7 +72,6 @@ const CmsHome: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* Desktop Sidebar */}
       {screens.md && (
         <Sider collapsible theme="dark" width={270}>
           <div
@@ -88,7 +91,6 @@ const CmsHome: React.FC = () => {
         </Sider>
       )}
 
-      {/* Mobile Drawer */}
       {!screens.md && (
         <Drawer
           placement="left"
@@ -118,9 +120,7 @@ const CmsHome: React.FC = () => {
             alignItems: "center",
             justifyContent: "space-between",
           }}
-          className="text-white"
         >
-          {/* Left */}
           {!screens.md && (
             <Button
               type="text"
@@ -130,18 +130,15 @@ const CmsHome: React.FC = () => {
             />
           )}
 
-          {/* Center */}
-          <span className="font-medium">Admin Panel</span>
+          <span className="text-white font-medium">Admin Panel</span>
 
-          {/* Right - Logout */}
           <Button
             type="text"
             size="small"
             icon={<LogoutOutlined />}
             onClick={handleLogout}
             style={{ color: "red" }}
-          >
-          </Button>
+          />
         </Header>
 
         <Content style={{ margin: 16 }}>
