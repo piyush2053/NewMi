@@ -75,7 +75,7 @@ const CmsHome: React.FC = () => {
       {screens.md && (
         <Sider collapsible theme="dark" width={270}>
           <div
-            className="flex items-center gap-2"
+            className="flex justify-center"
             style={{
               height: 64,
               margin: 16,
@@ -85,7 +85,6 @@ const CmsHome: React.FC = () => {
             }}
           >
             <img src={image} alt="logo" className="h-7" />
-            CMS
           </div>
           {menu}
         </Sider>
@@ -101,11 +100,10 @@ const CmsHome: React.FC = () => {
           width={270}
         >
           <div
-            className="flex items-center gap-2 px-4 py-4 text-white"
+            className="flex justify-center"
             style={{ background: "#001529" }}
           >
             <img src={image} alt="logo" className="h-7" />
-            CMS
           </div>
           {menu}
         </Drawer>

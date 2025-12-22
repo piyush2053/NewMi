@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Card,
   Table,
@@ -22,6 +22,7 @@ import { core_services } from "../../utils/api";
 const { Text } = Typography;
 const { useBreakpoint } = Grid;
 
+/* ================= TYPES ================= */
 interface EventItem {
   id: string;
   eventTitle: string;
@@ -29,72 +30,62 @@ interface EventItem {
   categoryId: number;
   location: string;
   userId: string;
-  eventTime: string;
   status: number;
+
+  maxAttendent: number;
+  currentVacany: number;
+  charges: number;
+
+  startDateTime: string | null;
+  endDateTime: string | null;
+  eventImg?: string;
 }
 
 const EventManagement: React.FC = () => {
   const screens = useBreakpoint();
+  const cancelRef = useRef(false);
 
   const [events, setEvents] = useState<EventItem[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const [search, setSearch] = useState("");
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState(0);
+
   const [open, setOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<EventItem | null>(null);
 
   const [form] = Form.useForm();
 
-  // ================= Helpers =================
-  const isLatLng = (location: string) =>
-    /^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(location);
 
-  const renderLocation = (location: string) => {
-    if (!isLatLng(location)) return location;
+  const getEventDuration = (start?: string | null, end?: string | null) => {
+    if (!start || !end) return { invalid: true };
 
-    return (
-      <div>
-        <Text strong>Pinned Location</Text>
-        <Collapse
-          ghost
-          size="small"
-          items={[
-            {
-              key: "raw",
-              label: <Text type="warning">Show raw</Text>,
-              children: (
-                <Text type="secondary" style={{ fontSize: 11 }}>
-                  {location}
-                </Text>
-              ),
-            },
-          ]}
-        />
-      </div>
+    const s = dayjs(start);
+    const e = dayjs(end);
+    const now = dayjs();
+
+    if (now.isAfter(e)) return { isEnded: true };
+
+    const totalMinutes = e.diff(s, "minute");
+    const remainingMinutes = e.diff(now, "minute");
+
+    const progress = Math.round(
+      Math.min(Math.max((remainingMinutes / totalMinutes) * 100, 0), 100)
     );
-  };
-
-  // ================= Duration Logic =================
-  const getEventDuration = (eventTime: string) => {
-    const start = dayjs(eventTime);
-    const end = start.add(3, "day"); // hardcoded end date
-
-    const total = end.diff(start, "minute");
-    const passed = dayjs().diff(start, "minute");
-
-    const isEnded = dayjs().isAfter(end);
-
-    const progress = isEnded
-      ? 100
-      : Math.min(Math.max((passed / total) * 100, 0), 100);
 
     return {
-      start,
-      end,
-      progress: Math.round(progress),
-      isEnded,
+      start: s,
+      end: e,
+      remainingMinutes,
+      progress,
+      isEnded: false,
     };
   };
 
-  // ================= Fetch =================
+  /* ================= FETCH ================= */
   const fetchEvents = async () => {
     setLoading(true);
     try {
@@ -107,8 +98,15 @@ const EventManagement: React.FC = () => {
         categoryId: item.CategoryId,
         location: item.Location,
         userId: item.UserId,
-        eventTime: item.EventTime,
         status: item.Status,
+
+        maxAttendent: item.MaxAttendent,
+        currentVacany: item.CurrentVacany,
+        charges: item.Charges,
+
+        startDateTime: item.StartDateTime,
+        endDateTime: item.EndDateTime,
+        eventImg: item.EventImg,
       }));
 
       setEvents(mapped);
@@ -123,7 +121,7 @@ const EventManagement: React.FC = () => {
     fetchEvents();
   }, []);
 
-  // ================= CRUD =================
+  /* ================= CRUD ================= */
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
@@ -149,9 +147,9 @@ const EventManagement: React.FC = () => {
     setOpen(true);
   };
 
-  const handleDelete = async (eventId: string) => {
+  const handleDelete = async (id: string) => {
     try {
-      await core_services.deleteEvent(eventId);
+      await core_services.deleteEvent(id);
       message.success("Event deleted");
       fetchEvents();
     } catch {
@@ -165,7 +163,40 @@ const EventManagement: React.FC = () => {
     form.resetFields();
   };
 
-  // ================= Table Columns =================
+  /* ================= BULK DELETE ================= */
+  const handleBulkDelete = async () => {
+    setBulkDeleting(true);
+    cancelRef.current = false;
+
+    const total = selectedRowKeys.length;
+
+    for (let i = 0; i < total; i++) {
+      if (cancelRef.current) break;
+
+      await core_services.deleteEvent(selectedRowKeys[i] as string);
+      setBulkProgress(Math.round(((i + 1) / total) * 100));
+    }
+
+    setBulkDeleting(false);
+    setBulkProgress(0);
+    setSelectedRowKeys([]);
+    fetchEvents();
+  };
+
+  const cancelBulkDelete = () => {
+    cancelRef.current = true;
+    message.warning("Bulk delete cancelled");
+  };
+
+  /* ================= SEARCH ================= */
+  const filteredEvents = events.filter((e) =>
+    [e.eventTitle, e.location, e.userId]
+      .join(" ")
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
+
+  /* ================= TABLE ================= */
   const columns = [
     {
       title: "Event Title",
@@ -173,53 +204,49 @@ const EventManagement: React.FC = () => {
     },
     {
       title: "Duration",
-      dataIndex: "eventTime",
-      width: 260,
-      render: (v: string) => {
-        const d = getEventDuration(v);
+      width: 280,
+      render: (_: any, record: EventItem) => {
+        const d: any = getEventDuration(
+          record.startDateTime,
+          record.endDateTime
+        );
 
-        if (d.isEnded) {
-          return <Tag color="default">ENDED</Tag>;
-        }
+        if (d.invalid) return <Tag>NO TIME</Tag>;
+        if (d.isEnded) return <Tag color="default">ENDED</Tag>;
 
         return (
-          <div>
+          <>
             <Text style={{ fontSize: 12 }}>
-              <b>Start:</b> {d.start.format("DD MMM YYYY hh:mm A")}
-            </Text>
-            <br />
-            <Text style={{ fontSize: 12 }}>
-              <b>End:</b> {d.end.format("DD MMM YYYY hh:mm A")}
+              <b>Ends:</b> {d.end.format("DD MMM YYYY hh:mm A")}
             </Text>
 
-            <div style={{ marginTop: 4 }}>
-              <Progress
-                percent={d.progress}
-                size="small"
-                showInfo={false}
-              />
-            </div>
-          </div>
+            <Progress
+              percent={d.progress}
+              size="small"
+              showInfo={false}
+              status="active"
+            />
+
+            <Text type="secondary" style={{ fontSize: 11 }}>
+              {Math.floor(d.remainingMinutes / 60)}h{" "}
+              {d.remainingMinutes % 60}m remaining
+            </Text>
+          </>
         );
       },
-    },
-    {
-      title: "Location",
-      dataIndex: "location",
-      render: (v: string) => renderLocation(v),
     },
     {
       title: "Actions",
       render: (_: any, record: EventItem) => (
         <Space>
-          <Button type="link" onClick={() => handleEdit(record)}>
+          <Button type="default" onClick={() => handleEdit(record)}>
             Edit
           </Button>
           <Popconfirm
             title="Delete this event?"
             onConfirm={() => handleDelete(record.id)}
           >
-            <Button type="link" danger>
+            <Button type="primary" danger>
               Delete
             </Button>
           </Popconfirm>
@@ -232,141 +259,99 @@ const EventManagement: React.FC = () => {
     <Card
       title="Event Management"
       extra={
-        <Button
-          type="primary"
-          block={!screens.md}
+        <Space>
+          {selectedRowKeys.length > 0 && (
+            <Button danger onClick={handleBulkDelete}>
+              Delete Selected ({selectedRowKeys.length})
+            </Button>
+          )}
+          <Button
+            type="primary"
           onClick={() => {
-            form.resetFields();
-            setEditingEvent(null);
-            setOpen(true);
-          }}
-        >
-          Create Event
-        </Button>
+              form.resetFields();
+              setEditingEvent(null);
+              setOpen(true);
+            }}
+          >
+            Create Event
+          </Button>
+        </Space>
       }
     >
-      {/* ================= Desktop ================= */}
+      <Input.Search
+        placeholder="Search by title, location, user"
+        allowClear
+        onChange={(e) => setSearch(e.target.value)}
+        style={{ marginBottom: 12 }}
+      />
+
       {screens.md && (
         <Table
           rowKey="id"
+          className="event-table"
           loading={loading}
-          dataSource={events}
+          dataSource={filteredEvents}
           columns={columns}
-          rowClassName={(record) =>
-            getEventDuration(record.eventTime).isEnded
-              ? "ended-row"
-              : ""
-          }
+          rowSelection={{
+            selectedRowKeys,
+            onChange: setSelectedRowKeys,
+          }}
         />
       )}
 
-      {/* ================= Mobile ================= */}
       {!screens.md && (
         <List
           loading={loading}
-          dataSource={events}
+          dataSource={filteredEvents}
           renderItem={(item) => {
-            const d = getEventDuration(item.eventTime);
+            const d = getEventDuration(item.startDateTime, item.endDateTime);
 
             return (
-              <Card
-                key={item.id}
-                style={{
-                  marginBottom: 12,
-                  background: d.isEnded ? "#e5e7eb" : undefined, // gray-600-ish
-                }}
-                title={item.eventTitle}
-              >
+              <Card key={item.id} style={{ marginBottom: 12 }} title={item.eventTitle}>
                 {d.isEnded ? (
-                  <Tag color="default">ENDED</Tag>
+                  <Tag>ENDED</Tag>
                 ) : (
                   <>
-                    <p>
-                      <Text strong>Start:</Text>{" "}
-                      {d.start.format("DD MMM YYYY hh:mm A")}
-                    </p>
-                    <p>
-                      <Text strong>End:</Text>{" "}
-                      {d.end.format("DD MMM YYYY hh:mm A")}
-                    </p>
-                    <Progress
-                      percent={d.progress}
-                      size="small"
-                      showInfo={false}
-                    />
+                    <p>Start: {d.start?.format("DD MMM YYYY hh:mm A")}</p>
+                    <p>End: {d.end?.format("DD MMM YYYY hh:mm A")}</p>
+                    <Progress percent={d.progress} size="small" showInfo={false} />
                   </>
                 )}
-
-                <p style={{ marginTop: 8 }}>
-                  <Text strong>Location:</Text>{" "}
-                  {renderLocation(item.location)}
-                </p>
-
-                <Space direction="vertical" style={{ width: "100%" }}>
-                  <Button block disabled={d.isEnded} onClick={() => handleEdit(item)}>
-                    Edit
-                  </Button>
-                  <Popconfirm
-                    title="Delete this event?"
-                    onConfirm={() => handleDelete(item.id)}
-                  >
-                    <Button block danger>
-                      Delete
-                    </Button>
-                  </Popconfirm>
-                </Space>
               </Card>
             );
           }}
         />
       )}
 
-      {/* ================= Modal ================= */}
+      {/* BULK PROGRESS */}
+      <Modal open={bulkDeleting} footer={null} closable={false}>
+        <Text>Deleting events...</Text>
+        <Progress percent={bulkProgress} />
+        <Button danger block onClick={cancelBulkDelete}>
+          Cancel
+        </Button>
+      </Modal>
+
+      {/* CREATE / EDIT */}
       <Modal
         title={editingEvent ? "Edit Event" : "Create Event"}
         open={open}
         onOk={handleSubmit}
         onCancel={handleClose}
         okText={editingEvent ? "Update" : "Create"}
-        width={screens.md ? 600 : "100%"}
-        style={!screens.md ? { top: 0 } : undefined}
-        bodyStyle={!screens.md ? { minHeight: "75vh" } : undefined}
       >
         <Form layout="vertical" form={form}>
           <Form.Item label="Event Title" name="eventTitle" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-
           <Form.Item label="Description" name="eventDesc" rules={[{ required: true }]}>
             <Input.TextArea rows={3} />
           </Form.Item>
-
           <Form.Item label="Location" name="location" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
-
-          <Form.Item label="Event Time" name="eventTime" rules={[{ required: true }]}>
-            <Input placeholder="2025-08-12T20:09:00Z" />
-          </Form.Item>
-
-          <Form.Item label="Category ID" name="categoryId" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
-
-          <Form.Item label="User ID" name="userId" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
         </Form>
       </Modal>
-
-      {/* ================= Row Style ================= */}
-      <style>
-        {`
-          .ended-row td {
-            background-color: #e5e7eb !important;
-          }
-        `}
-      </style>
     </Card>
   );
 };

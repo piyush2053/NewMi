@@ -207,3 +207,35 @@ code {
 .ant-drawer-body{
   background-color: #081638;
 }
+
+  /* Table outer border */
+  .event-table .ant-table-container {
+    border: 1px solid #cfe8ff;
+    border-radius: 8px;
+  }
+
+  /* Header background */
+  .event-table .ant-table-thead > tr > th {
+    background-color: #e6f4ff !important;
+    border-right: 1px solid #cfe8ff !important;
+    border-bottom: 1px solid #cfe8ff !important;
+    font-weight: 600;
+  }
+
+  /* Body cells */
+  .event-table .ant-table-tbody > tr > td {
+    background-color: #f5faff;
+    border-right: 1px solid #cfe8ff;
+    border-bottom: 1px solid #cfe8ff;
+  }
+
+  /* Row hover */
+  .event-table .ant-table-tbody > tr:hover > td {
+    background-color: #eaf3ff !important;
+  }
+
+  /* Remove last column right border */
+  .event-table .ant-table-thead > tr > th:last-child,
+  .event-table .ant-table-tbody > tr > td:last-child {
+    border-right: none;
+  }
