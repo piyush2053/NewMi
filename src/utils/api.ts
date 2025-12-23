@@ -1,8 +1,7 @@
 import axios from "axios";
 import { getToken, setToken } from "./function";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://NearWe-ccd3caa6gcetcaa5.centralindia-01.azurewebsites.net";
-// const API_BASE_URL = 'http://NearWe-ccd3caa6gcetcaa5.centralindia-01.azurewebsites.net'
+const API_BASE_URL = process.env.REACT_APP_APISTAGE_URL
 
 export const core_services = {
   // Login API
@@ -351,86 +350,120 @@ export const core_services = {
     }
   },
   getCategoryById: async (categoryId: string) => {
-  try {
-    const token = getToken();
-    const response = await axios.get(
-      `${API_BASE_URL}/event-category/${categoryId}`,
-      {
-        headers: {
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-      }
-    );
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
-},
+    try {
+      const token = getToken();
+      const response = await axios.get(
+        `${API_BASE_URL}/event-category/${categoryId}`,
+        {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
 
-// Create Category
-createCategory: async (data: {
-  categoryName: string;
-  categoryDesc: string;
-}) => {
-  try {
-    const token = getToken();
-    const response = await axios.post(
-      `${API_BASE_URL}/event-category`,
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-      }
-    );
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
-},
-
-// Update Category
-updateCategory: async (
-  categoryId: string,
-  data: {
+  // Create Category
+  createCategory: async (data: {
     categoryName: string;
     categoryDesc: string;
-  }
-) => {
-  try {
-    const token = getToken();
-    const response = await axios.put(
-      `${API_BASE_URL}/event-category/${categoryId}`,
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-      }
-    );
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
-},
+  }) => {
+    try {
+      const token = getToken();
+      const response = await axios.post(
+        `${API_BASE_URL}/event-category`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
 
-// Delete Category
-deleteCategory: async (categoryId: string) => {
-  try {
-    const token = getToken();
-    const response = await axios.delete(
-      `${API_BASE_URL}/event-category/${categoryId}`,
-      {
-        headers: {
-          Authorization: token ? `Bearer ${token}` : "",
+  // Update Category
+  updateCategory: async (
+    categoryId: string,
+    data: {
+      categoryName: string;
+      categoryDesc: string;
+    }
+  ) => {
+    try {
+      const token = getToken();
+      const response = await axios.put(
+        `${API_BASE_URL}/event-category/${categoryId}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Delete Category
+  deleteCategory: async (categoryId: string) => {
+    try {
+      const token = getToken();
+      const response = await axios.delete(
+        `${API_BASE_URL}/event-category/${categoryId}`,
+        {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  sendPushNotification: async ({
+    userIds,
+    title,
+    body,
+    data,
+  }: {
+    userIds: string[];
+    title: string;
+    body: string;
+    data?: Record<string, any>;
+  }) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/expo/send-push`,
+        {
+          userIds,
+          title,
+          body,
+          data,
         },
-      }
-    );
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || error.message;
-  }
-},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || error.message;
+    }
+  },
 };

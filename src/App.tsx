@@ -26,6 +26,7 @@ import CategoryManagement from "./cms/pages/CategoryManagement";
 import EventManagement from "./cms/pages/EventManagement";
 import AppManagement from "./cms/pages/AppManagement";
 import InsightsDashboard from "./cms/pages/InsightsDashboard";
+import Announcements from "./cms/pages/Announcements";
 
 const App = () => {
   return (
@@ -54,6 +55,7 @@ const App = () => {
                     <Route path="categories" element={<CategoryManagement />} />
                     <Route path="events" element={<EventManagement />} />
                     <Route path="app" element={<AppManagement />} />
+                    <Route path="announcements" element={<Announcements />} />
                   </Route>
 
                   <Route

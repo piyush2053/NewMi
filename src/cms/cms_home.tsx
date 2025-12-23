@@ -12,6 +12,7 @@ import {
 } from "@ant-design/icons";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { removeToken } from "../utils/function";
+import { Mic } from "lucide-react";
 
 const { Header, Sider, Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -41,6 +42,11 @@ const menuItems = [
     key: "/cms/app",
     icon: <SettingOutlined />,
     label: "App Management",
+  },
+  {
+    key: "/cms/announcements",
+    icon: <Mic />,
+    label: "Announcements",
   },
 ];
 
