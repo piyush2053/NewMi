@@ -65,11 +65,10 @@ const Announcements: React.FC = () => {
         title: "Status",
         render: (_, record) => (
           <span
-            className={`px-2 py-1 rounded-full text-xs ${
-              record.id === "3"
+            className={`px-2 py-1 rounded-full text-xs ${record.id === "3"
                 ? "bg-gray-100 text-gray-500"
                 : "bg-green-100 text-green-700"
-            }`}
+              }`}
           >
             {record.id === "3" ? "Offline" : "Active"}
           </span>
@@ -180,22 +179,33 @@ const Announcements: React.FC = () => {
           <Form.Item
             label="Announcement Title"
             name="title"
-            rules={[{ required: true, message: "Enter title" }]}
+            rules={[
+              { required: true, message: "Enter title" },
+              { max: 20, message: "Title can be maximum 20 characters" },
+            ]}
           >
-            <Input placeholder="Maintenance Alert" />
+            <Input
+              placeholder="Maintenance Alert"
+              maxLength={20}
+              showCount
+            />
           </Form.Item>
-
           <Form.Item
             label="Body Content"
             name="body"
-            rules={[{ required: true, message: "Enter message body" }]}
+            rules={[
+              { required: true, message: "Enter message body" },
+              { max: 60, message: "Body can be maximum 60 characters" },
+            ]}
           >
             <Input.TextArea
               rows={4}
-              maxLength={500}
+              maxLength={40}
+              showCount
               placeholder="App will be on maintenance till 12 PM."
             />
           </Form.Item>
+
 
           <Form.Item
             label="Where should user land?"
