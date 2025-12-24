@@ -45,7 +45,7 @@ const menuItems = [
   },
   {
     key: "/cms/announcements",
-    icon: <Mic />,
+    icon:  <SettingOutlined />,
     label: "Announcements",
   },
 ];
