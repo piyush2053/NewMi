@@ -16,9 +16,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
 .ant-input::placeholder,
 .ant-input-password input::placeholder {
-  color: #4b5563; /* Tailwind's gray-600 */
+  color: #4b5563;
+  /* Tailwind's gray-600 */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
@@ -26,8 +28,10 @@ code {
 }
 
 .scrollbar-hide {
-  -ms-overflow-style: none !important; /* IE and Edge */
-  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important;
+  /* IE and Edge */
+  scrollbar-width: none !important;
+  /* Firefox */
 }
 
 
@@ -35,16 +39,20 @@ code {
   from {
     transform: translateX(-100%);
   }
+
   to {
     transform: translateX(0%);
   }
 }
+
 .text-write {
   font-size: inherit;
   font-weight: inherit;
   color: white;
-  max-width: 0;                 /* FIX: prevents shifting */
-  display: inline-block;        /* keeps cursor at correct place */
+  max-width: 0;
+  /* FIX: prevents shifting */
+  display: inline-block;
+  /* keeps cursor at correct place */
   white-space: nowrap;
   overflow: hidden;
   animation: typing 3s steps(20) forwards;
@@ -75,8 +83,10 @@ code {
   from {
     max-width: 0;
   }
+
   to {
-    max-width: 200px; /* enough to hold "NearWe" */
+    max-width: 200px;
+    /* enough to hold "NearWe" */
   }
 }
 
@@ -204,38 +214,67 @@ code {
 }
 
 
-.ant-drawer-body{
+.ant-drawer-body {
   background-color: #081638;
 }
 
-  /* Table outer border */
-  .event-table .ant-table-container {
-    border: 1px solid #cfe8ff;
-    border-radius: 8px;
-  }
+/* Table outer border */
+.event-table .ant-table-container {
+  border: 1px solid #cfe8ff;
+  border-radius: 8px;
+}
 
-  /* Header background */
-  .event-table .ant-table-thead > tr > th {
-    background-color: #e6f4ff !important;
-    border-right: 1px solid #cfe8ff !important;
-    border-bottom: 1px solid #cfe8ff !important;
-    font-weight: 600;
-  }
+/* Header background */
+.event-table .ant-table-thead>tr>th {
+  background-color: #e6f4ff !important;
+  border-right: 1px solid #cfe8ff !important;
+  border-bottom: 1px solid #cfe8ff !important;
+  font-weight: 600;
+}
 
-  /* Body cells */
-  .event-table .ant-table-tbody > tr > td {
-    background-color: #f5faff;
-    border-right: 1px solid #cfe8ff;
-    border-bottom: 1px solid #cfe8ff;
-  }
+/* Body cells */
+.event-table .ant-table-tbody>tr>td {
+  background-color: #f5faff;
+  border-right: 1px solid #cfe8ff;
+  border-bottom: 1px solid #cfe8ff;
+}
 
-  /* Row hover */
-  .event-table .ant-table-tbody > tr:hover > td {
-    background-color: #eaf3ff !important;
-  }
+/* Row hover */
+.event-table .ant-table-tbody>tr:hover>td {
+  background-color: #eaf3ff !important;
+}
 
-  /* Remove last column right border */
-  .event-table .ant-table-thead > tr > th:last-child,
-  .event-table .ant-table-tbody > tr > td:last-child {
-    border-right: none;
-  }
+/* Remove last column right border */
+.event-table .ant-table-thead>tr>th:last-child,
+.event-table .ant-table-tbody>tr>td:last-child {
+  border-right: none;
+}
+
+.event-table-ui .ant-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.event-table-ui .ant-table-thead>tr>th {
+  background: #fafafa;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+}
+
+.event-table-ui .ant-table-tbody>tr>td {
+  padding: 16px;
+}
+
+.event-table-ui .ant-table-tbody>tr {
+  transition: background 0.2s ease;
+}
+
+.event-table-ui .ant-table-tbody>tr:hover {
+  background: #f9fafb;
+}
+
+.event-table-ui .ant-checkbox-inner {
+  border-radius: 50%;
+}

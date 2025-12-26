@@ -1,5 +1,6 @@
 "use client";
-import me from '../assets/team/Me.jpg'
+import me from '../assets/team/piyush.jpeg'
+import aniket from '../assets/team/aniket.jpeg'
 import React from "react";
 import { Users } from "lucide-react";
 
@@ -8,7 +9,7 @@ export default function AboutUs() {
     {
       name: "Aniket Abnave",
       role: "Co-Founder",
-      img: "https://i.pravatar.cc/300?img=1",
+      img: aniket,
     },
     {
       name: "Sneh Gour",
@@ -34,7 +35,7 @@ export default function AboutUs() {
 
   return (
     <div className="bg-[#0a0e1a] text-white font-sans min-h-screen pt-28 px-6">
-      
+
       {/* HERO SECTION */}
       <section className="max-w-5xl mx-auto text-center mb-16">
         <div className="inline-flex items-center gap-2 px-5 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full mb-6">
@@ -49,9 +50,9 @@ export default function AboutUs() {
         </h1>
 
         <p className="text-gray-300 text-lg max-w-3xl mx-auto leading-relaxed">
-          NearWe was created with a vision to bring communities closer.  
-          We help people discover events, meet like-minded friends, and build 
-          real human connections in the digital era. Our mission is simple — 
+          NearWe was created with a vision to bring communities closer.
+          We help people discover events, meet like-minded friends, and build
+          real human connections in the digital era. Our mission is simple —
           make the world feel smaller, warmer, and more connected.
         </p>
       </section>

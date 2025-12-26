@@ -1,14 +1,14 @@
 import React, { useState } from "react";
+import { Avatar, Popover, Button, Divider, Typography } from "antd";
+import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import image from "../assets/logo/logo-removebg.png";
-import { Layout, Menu, Drawer, Grid, Button } from "antd";
+import { Layout, Menu, Drawer, Grid } from "antd";
 import {
-  UserOutlined,
   AppstoreOutlined,
   CalendarOutlined,
   SettingOutlined,
   MenuOutlined,
-  LogoutOutlined,
-  DashboardOutlined, // NEW
+  DashboardOutlined,
 } from "@ant-design/icons";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { removeToken } from "../utils/function";
@@ -45,7 +45,7 @@ const menuItems = [
   },
   {
     key: "/cms/announcements",
-    icon:  <SettingOutlined />,
+    icon: <SettingOutlined />,
     label: "Announcements",
   },
 ];
@@ -62,6 +62,66 @@ const CmsHome: React.FC = () => {
     removeToken();
     navigate("/cms/login", { replace: true });
   };
+  const { Text } = Typography;
+
+  const adminPopoverContent = (
+    <div
+      style={{
+        width: 240,
+        borderRadius: 12,
+        background: "#fff",
+        padding: 16,
+      }}
+    >
+   <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    cursor: "pointer",
+  }}
+>
+  <Avatar
+    size={32}
+    style={{
+      backgroundColor: "#E0E7FF",
+      color: "#3B82F6",
+    }}
+    icon={<UserOutlined />}
+  />
+
+  {/* Show text ONLY on md and above */}
+  {screens.md && (
+    <div style={{ lineHeight: 1.2 }}>
+      <div style={{ color: "#fff", fontSize: 13, fontWeight: 500 }}>
+        Admin User
+      </div>
+      <div style={{ color: "#9CA3AF", fontSize: 11 }}>
+        admin@example.com
+      </div>
+    </div>
+  )}
+</div>
+
+
+      <Divider style={{ margin: "12px 0" }} />
+
+      <Button
+        type="text"
+        danger
+        block
+        icon={<LogoutOutlined />}
+        onClick={handleLogout}
+        style={{
+          textAlign: "left",
+          padding: "6px 8px",
+          borderRadius: 8,
+        }}
+      >
+        Logout
+      </Button>
+    </div>
+  );
 
   const menu = (
     <Menu
@@ -136,14 +196,39 @@ const CmsHome: React.FC = () => {
 
           <span className="text-white font-medium">Admin Panel</span>
 
-          <Button
-            type="text"
-            size="small"
-            icon={<LogoutOutlined />}
-            onClick={handleLogout}
-            style={{ color: "red" }}
-          />
+          <Popover
+            content={adminPopoverContent}
+            trigger="click"
+            placement="bottomRight"
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                cursor: "pointer",
+              }}
+            >
+              <Avatar
+                size={32}
+                style={{
+                  backgroundColor: "#E0E7FF",
+                  color: "#3B82F6",
+                }}
+                icon={<UserOutlined />}
+              />
+              <div style={{ lineHeight: 1.2 }}>
+                <div style={{ color: "#fff", fontSize: 13, fontWeight: 500 }}>
+                  Admin User
+                </div>
+                <div style={{ color: "#9CA3AF", fontSize: 11 }}>
+                  admin@example.com
+                </div>
+              </div>
+            </div>
+          </Popover>
         </Header>
+
 
         <Content style={{ margin: 16 }}>
           <Outlet />
