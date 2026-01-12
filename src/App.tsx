@@ -27,6 +27,8 @@ import EventManagement from "./cms/pages/EventManagement";
 import AppManagement from "./cms/pages/AppManagement";
 import InsightsDashboard from "./cms/pages/InsightsDashboard";
 import Announcements from "./cms/pages/Announcements";
+import ChildSafetyPolicy from "./pages/Child";
+import TermsAndConditions from "./pages/Terms";
 
 const App = () => {
   return (
@@ -70,6 +72,8 @@ const App = () => {
                     }
                   />
                   <Route path="/aboutus" element={<AboutUs />} />
+                  <Route path="/terms" element={<TermsAndConditions />} />
+                  <Route path="/child-safety" element={<ChildSafetyPolicy />} />
                   <Route path="/cms/login" element={<Login />} />
                   <Route
                     path="/"
