@@ -59,11 +59,11 @@ export default function AboutUs() {
 
 
       {/* TEAM SECTION */}
-      <section className="max-w-7xl mx-auto mb-24">
+      {/* <section className="max-w-7xl mx-auto mb-24">
         <h2 className="text-4xl font-bold text-center mb-10 bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
           Meet Our Team
-        </h2>
-
+        </h2> */}
+{/* 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 px-4">
 
           {team.map((member, i) => (
@@ -84,8 +84,8 @@ export default function AboutUs() {
             </div>
           ))}
 
-        </div>
-      </section>
+        </div> */}
+      {/* </section> */}
 
 
       {/* FOOTER */}
